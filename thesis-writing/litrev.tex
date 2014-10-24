@@ -1,7 +1,7 @@
 \section{Literature Review}
 McCarthy invented the concept of Garbage Collection in 1959 ~\cite{mccarthy}. His works focused on indirect method of collecting 
 garbage which is now called mark-sweep or tracing collector. While Mark-sweep was the only method that was available at the early 1960's,
- Collins designed a new method called reference counting, which is more direct method to detect garbage~\cite{collins}. 
+ Collins designed a new method called reference counting, which is more direct method to detect garbage~\cite{Collins1960}. 
  Dijkstra et al~\cite{dijkstra} describes the correctness condition of tricolor tracing based collector. This work redefined the 
  way the collectors should be designed and how one can prove the properties of the collectors. Haddon et al ~\cite{haddon} realized 
  the fragmentation issues in the mark-sweep algorithm and designed a mark-compact algorithm. Fenichel et al~\cite{feni} and Cheney~\cite{cheney}
@@ -10,7 +10,7 @@ garbage which is now called mark-sweep or tracing collector. While Mark-sweep wa
  Appel designed a simple generation garbage collection~\cite{Appel89}.
  
  While most of the literature up until now considered a indirect method of collecting garbage through tracing, the other form of collection is counting the references.
- While counting the references seems obvious way to solve the problem, McBeth's~\cite{McBeth1983} article on the inability to collect cyclic garbage structures by 
+ While counting the references seems obvious way to solve the problem, McBeth's~\cite{McBeth1963} article on the inability to collect cyclic garbage structures by 
  reference counting method made the method less practical.
 
 Bobrow's ~\cite{Bobrow1980} solution to collect cylic garbage based on reference counting method was the first hybrid collector which uses both tracing and
