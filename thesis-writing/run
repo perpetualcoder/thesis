@@ -1,0 +1,4 @@
+pdflatex mainfile.tex
+bibtex mainfile.aux
+pdflatex mainfile.tex
+pdflatex mainfile.tex

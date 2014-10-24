@@ -1,0 +1,26 @@
+\select@language {english}
+\contentsline {chapter}{\hspace {-1.5em} LIST OF TABLES \vspace {12pt}}{iii}{chapter*.1}
+\contentsline {chapter}{\hspace {-1.5em} LIST OF FIGURES \vspace {12pt}}{iv}{chapter*.2}
+\contentsline {chapter}{\hspace {-1.5em} ABSTRACT}{1}{chapter*.3}
+\vspace {12pt} \hspace {-1.8em} CHAPTER \vspace {-1em}
+\contentsline {section}{\numberline {0.1}Introduction}{1}{section.0.1}
+\contentsline {section}{\numberline {0.2}Literature Review}{2}{section.0.2}
+\contentsline {section}{\numberline {0.3}Preliminary Work}{4}{section.0.3}
+\contentsline {subsection}{\numberline {0.3.1}Example: A Simple Cycle}{5}{subsection.0.3.1}
+\contentsline {subsection}{\numberline {0.3.2}Example: A Doubly-Linked List}{5}{subsection.0.3.2}
+\contentsline {subsection}{\numberline {0.3.3}Example: Rebalancing A Doubly-Linked List}{6}{subsection.0.3.3}
+\contentsline {subsection}{\numberline {0.3.4}Example: Recovering Without Detecting a Cycle}{7}{subsection.0.3.4}
+\contentsline {subsection}{\numberline {0.3.5}Concurrency Issues}{7}{subsection.0.3.5}
+\contentsline {subsection}{\numberline {0.3.6}The Single-Threaded Collector}{7}{subsection.0.3.6}
+\contentsline {subsection}{\numberline {0.3.7}The Multi-Threaded Collector}{8}{subsection.0.3.7}
+\contentsline {subsection}{\numberline {0.3.8}Correctness and Algorithm Complexity}{8}{subsection.0.3.8}
+\contentsline {subsection}{\numberline {0.3.9}Experimental Results}{11}{subsection.0.3.9}
+\contentsline {section}{\numberline {0.4}Proposed Work}{12}{section.0.4}
+\contentsline {section}{\numberline {0.5}Methodology and Evaluation}{13}{section.0.5}
+\contentsline {section}{\numberline {0.6}Conclusion}{13}{section.0.6}
+\contentsline {section}{\numberline {0.7}Future Work}{13}{section.0.7}
+\vspace {12pt}
+\contentsline {chapter}{\hspace {-1.6em} REFERENCES}{13}{section.0.7}
+\vspace {12pt} \hspace {-1.8em} APPENDIX \vspace {-1em}
+\vskip 12\p@ \relax 
+\contentsline {chapter}{\uppercase {\numberline {A}Multi-Threaded Collector Algorithm}}{17}{appendix.A}

@@ -1,0 +1,13 @@
+\select@language {english}
+\contentsline {figure}{\numberline {1}{\ignorespaces Reclaiming a cycle with three objects}}{6}{figure.0.1}
+\contentsline {figure}{\numberline {2}{\ignorespaces Doubly-linked list}}{6}{figure.0.2}
+\contentsline {figure}{\numberline {3}{\ignorespaces Rebalancing a doubly-linked list}}{7}{figure.0.3}
+\contentsline {figure}{\numberline {4}{\ignorespaces Graph model}}{8}{figure.0.4}
+\contentsline {figure}{\numberline {5}{\ignorespaces Subgraph model}}{8}{figure.0.5}
+\addvspace {12\p@ }
+\contentsline {figure}{\numberline {6}{\ignorespaces A large number of independent rings are collected by various number of worker threads. Collection speed drops linearly with the number of cores used. }}{12}{figure.0.6}
+\addvspace {12\p@ }
+\contentsline {figure}{\numberline {7}{\ignorespaces A chain of linked cycles is created in memory. The connections are severed, then the roots are removed. Multiple collector threads are created and operations partially overlap.}}{12}{figure.0.7}
+\addvspace {12\p@ }
+\contentsline {figure}{\numberline {8}{\ignorespaces Graphs of different types are created at various sizes in memory, including cliques, chains of cycles, large cycles, and large doubly linked lists. Regardless of the type of object, collection time per object remains constant, verifying the linearity of the underlying collection mechanism. }}{13}{figure.0.8}
+\addvspace {12\p@ }

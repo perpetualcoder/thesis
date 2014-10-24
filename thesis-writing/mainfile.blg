@@ -1,0 +1,64 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: mainfile.aux
+The style file: plain.bst
+Database file #1: ref.bib
+Warning--string name "ucb" is undefined
+--line 271 of file ref.bib
+Warning--string name "acm" is undefined
+--line 318 of file ref.bib
+Warning--string name "acm" is undefined
+--line 327 of file ref.bib
+Warning--string name "acm" is undefined
+--line 343 of file ref.bib
+A bad cross reference---entry "sans93"
+refers to entry "FPCA93", which doesn't exist
+Warning--I didn't find a database entry for "McBeth1983"
+Warning--I didn't find a database entry for "Collins1960"
+Warning--I didn't find a database entry for "FPCA93"
+Warning--to sort, need author or key in url:refimpl
+Warning--empty publisher in Brownbridge1985
+Warning--empty booktitle in sans93
+Warning--empty year in sans93
+Warning--empty school in zorn89
+You've used 37 entries,
+            2118 wiz_defined-function locations,
+            743 strings with 9181 characters,
+and the built_in function-call counts, 11859 in all, are:
+= -- 1200
+> -- 460
+< -- 8
++ -- 195
+- -- 147
+* -- 837
+:= -- 1954
+add.period$ -- 112
+call.type$ -- 37
+change.case$ -- 181
+chr.to.int$ -- 0
+cite$ -- 42
+duplicate$ -- 458
+empty$ -- 966
+format.name$ -- 147
+if$ -- 2471
+int.to.chr$ -- 0
+int.to.str$ -- 37
+missing$ -- 32
+newline$ -- 187
+num.names$ -- 74
+pop$ -- 163
+preamble$ -- 1
+purify$ -- 147
+quote$ -- 0
+skip$ -- 333
+stack$ -- 0
+substring$ -- 852
+swap$ -- 91
+text.length$ -- 8
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 144
+warning$ -- 5
+while$ -- 128
+width$ -- 39
+write$ -- 403
+(There was 1 error message)

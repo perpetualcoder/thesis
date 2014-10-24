@@ -1,0 +1,4 @@
+pdflatex myversion.tex
+bibtex myversion.aux
+pdflatex myversion.tex
+pdflatex myversion.tex

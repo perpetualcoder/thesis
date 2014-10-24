@@ -1,0 +1,415 @@
+Note that in the following sections, locks are always obtained in canonical order that avoids deadlocks. Unlock methods unlock the last set of items that were locked.
+
+The lists on the collectors are thread-safe.
+
+The collector object is itself managed by a simple reference count. Code for incrementing and decrementing this count is not explicitly present in the code below.
+
+A reference implementation is also provided ~\cite{url:refimpl}.
+
+\begin{algorithm}[ht]
+{\small
+\tcp{LinkSet creates a new link,
+  and decides the type of the link to create.}
+{\bf LinkSet(link,node)}:\\
+\quad {lock (link.Source,node)}\\
+\quad {\bf if} node == NULL {\bf then}\\
+\quad \quad LinkFree(link)\\
+\quad \quad link.Target = NULL\\
+\quad {\bf EndIf}\\
+\quad {\bf if} link.Target == node {\bf then}\\
+\quad \quad {\bf Return}\\
+\quad {\bf EndIf}\\
+\quad oldLink = copy(link) \\
+\quad link.Target = node\\
+\quad {\bf If} link.Source.Phantomized {\bf then}\\
+\quad \quad MergeCollectors(link.Source, link.Target)\\
+\quad \quad link.PhantomCount++\\
+\quad \quad link.Phantomized = True\\
+\quad {\bf ElseIf} link.Source == node {\bf then}\\
+\quad \quad link.Which = 1 - node.Which\\
+\quad \quad node.Count[link.Which]++\\
+\quad {\bf ElseIf} node.Links not initialized {\bf then}\\
+\quad \quad node.Count[link.Which]++\\
+\quad \quad link.Which = node.Which\\
+\quad {\bf Else}\\
+\quad \quad link.which = 1 - node.Which\\
+\quad \quad node.Count[link.Which]++\\
+\quad {\bf EndIf}\\
+\quad {\bf If} oldLink != NULL\\
+\quad \quad LinkFree(oldLink)\\
+\quad  {unlock()}\\
+}
+\caption{LinkSet}
+\label{single:algorithm:linkset}
+\end{algorithm}
+\setlength{\textfloatsep}{0pt}
+\begin{algorithm}[ht]
+{\small
+\tcp{Freeing a link is usually just the decrement of a reference count, but
+if it is the last strong count, this could potentially start a Phantomization process.}
+%\begin{multicols}{2}
+% \tcp{$R$ and $S$ are objects currently in use.}
+{\bf LinkFree(link)}:\\
+% \tcp*[f]{Create a pointer from object $R$ to some free object}\\
+{\Indp
+{lock(link.Source,link.Target)}\\
+{\bf If} link.Target == NULL {\bf then}\\
+\quad {\bf Return}\\
+{\bf EndIf}\\
+{\bf If} link.Phantomized {\bf then}\\
+\quad DecPhantom(link.Target)\\
+{\bf Else}\\
+\quad link.Target.Count[link.Which]-\,-\\
+\quad {\bf If} link.Target.Count[link.Which] == 0 {\bf And} \\
+\quad \quad \quad link.Target.Which == link.Which {\bf then}\\
+\quad \quad {\bf If} link.Target.Count[1-link.Target.Which] == 0 {\bf And} \\
+\quad \quad \quad \quad link.Target.PhantomCount == 0 {\bf then}\\
+\quad \quad \quad Delete(node)\\
+\quad \quad \quad link.Target = NULL\\
+\quad \quad {\bf Else} \\
+\quad \quad \quad {\bf If} link.Target.Collector == NULL {\bf then}\\
+\quad \quad \quad \quad link.Target.Collector = new Collector()\\
+\quad \quad \quad {\bf EndIf}\\
+\quad \quad \quad AddToCollector(link.Target)\\
+\quad \quad {\bf EndIf} \\
+\quad {\bf EndIf}\\
+{\bf EndIf}\\
+{unlock()}\\
+}
+}
+\caption{LinkFree}
+\label{algorithm:linkfree}
+\end{algorithm}
+\setlength{\textfloatsep}{0pt}
+\begin{algorithm}[ht]
+{\small
+%\begin{multicols}{2}
+% \tcp{$R$ and $S$ are objects currently in use.}
+% \tcp*[f]{Create a pointer from object $R$ to some free object}\\
+\tcp{Adding an object to the collector puts back the strong
+count, effectively transferring the source of the strong link
+to the collector. It also adds a phantom count, which helps
+prevent the clearing of the Collector field.}
+{\bf AddToCollector(node)}:\\
+{\Indp
+{\bf While} True\\
+\quad {lock(node,node.Collector)}\\
+\quad {\bf If} node.Collector.Forward != NULL {\bf then}\\
+\quad \quad node.Collector = node.Collector.Forward\\
+\quad {\bf Else}\\
+\quad \quad node.Count[node.Which]++\\
+\quad \quad node.PhantomCount++\\
+\quad \quad node.Collector.CollectionList.append(node)\\
+\quad \quad {\bf Break}\\
+\quad {\bf EndIf}\\
+\quad {unlock()}\\
+{\bf EndWhile}\\
+}
+}
+\caption{AddToCollector}
+\label{single:algorithm:addtocollector}
+\end{algorithm}
+%\end{multicols}
+\setlength{\textfloatsep}{0pt}
+\begin{algorithm}[ht]
+{\small
+%\begin{multicols}{2}
+\tcp{The collector takes away the strong link it made in
+AddToCollector().
+}
+{\bf PhantomizeNode(node,collector)}:\\
+{\Indp
+{lock(node)}\\
+{\bf While} collector.Forward != NULL\\
+\quad collector = collector.Forward\\
+{\bf EndWhile}\\
+node.Collector = collector\\
+node.Count[node.Which]-\,-\\
+\quad // Prevent deletion while the\\
+\quad // node is managed by the Collector\\
+{\bf Let} phantomize = False\\
+{\bf If} node.Count[node.Which] $>$ 0 {\bf then}\\
+\quad {\bf Return}\\
+{\bf Else}\\
+\quad {\bf If} node.Count[1-node.Which] $>$ 0 {\bf then}\\
+\quad \quad node.Which = 1-node.Which\\
+\quad {\bf EndIf}\\
+\quad {\bf If} {\bf Not} node.Phantomized {\bf then}\\
+\quad \quad node.Phantomized = True\\
+\quad \quad node.PhantomizationComplete = False\\
+\quad \quad phantomize = True\\
+\quad {\bf EndIf}\\
+
+{\bf EndIf}\\
+{\bf Let} links = NULL \\
+{\bf If} phantomize {\bf then}\\
+\quad links = copy(node.Links)\\
+{\bf EndIf}\\
+{unlock()}\\
+{\bf ForEach} outgoing link in links\\
+\quad PhantomizeLink(link)\\
+{\bf EndFor}\\
+lock(node)\\
+{node.PhantomizationComplete = True}\\
+unlock()\\
+}
+%\end{multicols}
+}
+\caption{PhantomizeNode}
+\label{algorithm:phantomizenode}
+\end{algorithm}
+\setlength{\textfloatsep}{0pt}
+\begin{algorithm}[ht]
+{\small
+%\begin{multicols}{2}
+\tcp{This method describes the
+work to be carried out by a
+garbage collection thread. Live
+objects pointing to this collector, or
+Forward pointers from other collectors
+contribute to the RefCount field on
+the Collector.}
+{\bf Collector.Main()}:\\
+{\Indp
+{\bf While} True \\
+\quad WaitFor(Collector.RefCount == 0 {\bf Or} Work to do)\\
+\quad {\bf If} Collector.RefCount == 0 {\bf And} No work to do {\bf then}\\
+\quad \quad {\bf Break}\\
+\quad {\bf EndIf}\\
+\quad {\bf While} Collector.MergedList.size() $>$ 0\\
+\quad \quad Let node = Collector.MergedList.pop()\\
+\quad \quad Collector.RecoveryList.append(node)\\
+\quad {\bf EndWhile}\\
+\quad {\bf While} Collector.CollectionList.size() $>$ 0\\
+\quad \quad Let node = Collector.CollectionList.pop()\\
+\quad \quad PhantomizeNode(node,Collector)\\
+\quad \quad Collector.RecoveryList.append(node)\\
+\quad {\bf EndWhile}\\
+\quad {\bf While} Collector.RecoveryList.size() $>$ 0\\
+\quad \quad Let node = Collector.RecoveryList.pop()\\
+\quad \quad RecoverNode(node)\\
+\quad \quad Collector.CleanList.append(node)\\
+\quad {\bf EndWhile}\\
+\quad {\bf While} Collector.RebuildList.size() $>$ 0\\
+\quad \quad Let node = Collector.RebuildList.pop()\\
+\quad \quad RecoverNode(node)\\
+\quad {\bf EndWhile}\\
+\quad {\bf While} Collector.CleanList.size() $>$ 0\\
+\quad \quad Let node = Collector.CleanList.pop()\\
+\quad \quad CleanNode(node)\\
+\quad {\bf EndWhile}\\
+{\bf EndWhile}\\
+}
+}
+\caption{Collector.Main}
+\label{algorithm:main}
+\end{algorithm}
+\setlength{\textfloatsep}{0pt}
+\begin{algorithm}[ht]
+{\small
+%\begin{multicols}{2}
+{\bf PhantomizeLink(link)}:\\
+{\Indp
+ {lock(link.Source,link.Target)}\\
+ {\bf If} link.Target == NULL {\bf then}\\
+\quad  {unlock()}\\
+ \quad {\bf Return}\\
+ {\bf EndIf}\\
+{\bf If} link.Phantomized {\bf then}\\
+\quad  {unlock()}\\
+\quad {\bf Return} \\
+{\bf EndIf}\\
+link.Target.PhantomCount++\\
+link.Phantomized = True\\
+linkFree(link)\\
+MergeCollectors(link.Source, link.Target)\\
+ {unlock()}\\
+}
+}
+\caption{PhantomizeLink}
+\label{single:algorithm:phantomizelink}
+\end{algorithm}
+\setlength{\textfloatsep}{0pt}
+\begin{algorithm}[ht]
+{\small
+%\begin{multicols}{2}
+\tcp{DecPhantom is responsible for removing any reference to
+the collector.}
+{\bf DecPhantom(node)}:\\
+{\Indp
+ {lock(node)}\\
+node.PhantomCount- -\\
+{\bf If} node.PhantomCount == 0 {\bf then}\\
+\quad {\bf If} node.Count[node.Which]== 0 {\bf And}\\
+\quad \quad \quad node.Count[1-node.Which] == 0 {\bf then}\\
+\quad \quad Delete(node)\\
+\quad {\bf Else}\\
+\quad \quad node.Collector = NULL\\
+\quad {\bf EndIf}\\
+{\bf EndIf}\\
+ {unlock()}\\
+}
+}
+\caption{DecPhantom}
+\label{single:algorithm:decPhantom}
+\end{algorithm}
+\setlength{\textfloatsep}{0pt}
+
+\begin{algorithm}[ht]
+{\small
+%\begin{multicols}{2}
+{\bf RecoverNode(node)}:\\
+{\Indp
+ {lock(node)}\\
+{\bf Let} links = NULL\\
+{\bf If} node.Count[node.Which] $>$ 0 {\bf then}\\
+\quad WaitFor(node.PhantomizationComplete == True)\\
+\quad node.Phantomized = False\\
+\quad links = copy(node.Links)\\
+{\bf EndIf}\\
+ {unlock()}\\
+{\bf ForEach} link in links \\
+\quad Rebuild(link)\\
+{\bf EndFor}\\
+}
+}
+\caption{RecoverNode}
+\label{algorithm:recover}
+\end{algorithm}
+\setlength{\textfloatsep}{0pt}
+
+\begin{algorithm}[ht]
+{\small
+%\begin{multicols}{2}
+{\bf Rebuild(link)}:\\
+{\Indp
+ {lock(link.Source,link.Target)}\\
+{\bf If} link.Phantomized {\bf then}\\
+\quad {\bf If} link.Target == link.Source {\bf then}\\
+\quad \quad link.Which = 1- link.Target.Which\\
+\quad {\bf ElseIf} link.Target.Phantomized {\bf then} \\
+\quad \quad link.Which = link.Target.Which\\
+\quad {\bf ElseIf} count(link.Target.Links) == 0 {\bf then}\\
+\quad \quad link.Which = link.Target.Which\\
+\quad {\bf Else}\\
+\quad \quad link.Which = 1-link.Target.Which\\
+\quad {\bf EndIf}\\
+\quad link.Target.Count[link.Which]++\\
+\quad link.Target.PhantomCount- -\\
+\quad{\bf If} link.Target.PhantomCount == 0 {\bf then}\\
+\quad \quad link.Target.Collector = NULL\\
+\quad {\bf EndIf}\\
+\quad link.Phantomized = False \\
+\quad Add link.Target to Collector.RecoveryList\\
+{\bf EndIf}\\
+ {unlock()}\\
+}
+}
+\caption{Rebuild}
+\label{single:algorithm:rebuild}
+\end{algorithm}
+\setlength{\textfloatsep}{0pt}
+
+\begin{algorithm}[ht]
+{\small
+%\begin{multicols}{2}
+\tcp{After deleting all the outgoing links, decrement
+the phantom count by one (i.e. the reference held by
+the collector itself). When the last phantom count
+is gone, the object is cleaned up.}
+{\bf  CleanNode(node)}:\\
+{\Indp
+ {lock(node)}\\
+{\bf Let} die = False\\
+{\bf If} node.Count[node.Which]== 0 {\bf And}\\
+\quad \quad node.Count[1-node.Which]== 0 {\bf then}\\
+\quad  die = True\\
+{\bf EndIf}\\
+{unlock()}\\
+{\bf If} die {\bf then}\\
+\quad {\bf ForEach} link in node\\
+\quad \quad LinkFree(link)\\
+\quad {\bf EndFor}\\
+{\bf EndIf}\\
+DecPhantom(node)\\
+ }
+}
+\caption{CleanNode}
+\label{algorithm:cleanup}
+\end{algorithm}
+\setlength{\textfloatsep}{0pt}
+\begin{algorithm}[ht]
+{\small
+{\bf  Delete(node)}:\\
+{\Indp
+\quad {\bf ForEach} link in node \\
+\quad \quad LinkFree(link)\\
+\quad {\bf EndFor}\\
+\quad freeMem(node)\\
+
+ }
+}
+\caption{Delete}
+\label{algorithm:Delete}
+\end{algorithm}
+\setlength{\textfloatsep}{0pt}
+
+\begin{algorithm}[ht]
+{\small
+%\begin{multicols}{2}
+\tcp{When two collector threads
+realize they are managing a common
+subset of objects, one defers to
+the other. The arguments, source and
+target, are both nodes.}
+{\bf MergeCollectors(source,target)}:\\
+{\Indp
+{\bf Let} s = source.Collector\\
+{\bf Let} t = target.Collector\\
+{\bf Let} done = False\\
+{\bf If} s == NULL {\bf And} t != NULL {\bf then}\\
+\quad lock(source)\\
+\quad source.Collector = t\\
+\quad unlock()\\
+\quad {\bf Return}\\
+{\bf EndIf}\\
+{\bf If} s != NULL {\bf And} t == NULL {\bf then}\\
+\quad lock(target)\\
+\quad target.Collector = s\\
+\quad unlock()\\
+\quad {\bf Return}\\
+{\bf EndIf}\\
+{\bf If} s == NULL {\bf Or} s == NULL {\bf then}\\
+\quad {\bf Return}\\
+{\bf EndIf}\\
+{\bf While Not} done\\
+\quad  {lock(s,t,target,source)}\\
+\quad {\bf If} s.Forward == t and t.Forward == NULL {\bf then}\\
+\quad \quad target.Collector = s\\
+\quad \quad source.Collector = s\\
+\quad \quad done = True\\
+\quad {\bf ElseIf} t.Forward == s and s.Forward == NULL {\bf then}\\
+\quad \quad target.Collector = t\\
+\quad \quad source.Collector = t\\
+\quad \quad done = True\\
+\quad {\bf ElseIf} t.Forward != NULL {\bf then}\\
+\quad \quad t = t.Forward \\
+\quad {\bf ElseIf} s.Forward != NULL {\bf then}\\
+\quad \quad s = s.Forward \\
+\quad {\bf Else}\\
+\quad \quad Transfer s.CollectionList to t.CollectionList \\
+\quad \quad Transfer s.MergedList to t.MergedList \\
+\quad \quad Transfer s.RecoveryList to t.MergedList \\
+\quad \quad Transfer s.RebuildList to t.RebuildList \\
+\quad \quad Transfer s.CleanList to t.MergedList \\
+\quad \quad target.Collector = t\\
+\quad \quad source.Collector = t\\
+\quad \quad done = True\\
+\quad {\bf EndIf}\\
+\quad unlock()\\
+{\bf EndWhile} \\
+}
+}
+\caption{MergeCollectors}
+\label{algorithm:mergecollectors}
+\end{algorithm}

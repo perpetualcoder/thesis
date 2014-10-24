@@ -1,0 +1,68 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: myversion.aux
+The style file: plain.bst
+Database file #1: ref.bib
+Warning--string name "ucb" is undefined
+--line 271 of file ref.bib
+Warning--string name "acm" is undefined
+--line 318 of file ref.bib
+Warning--string name "acm" is undefined
+--line 327 of file ref.bib
+Warning--string name "acm" is undefined
+--line 343 of file ref.bib
+You're missing a field name---line 812 of file ref.bib
+ : 
+ : %         url = {https://github.com/stevenrbrandt/MultiThreadBrownbridge},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+A bad cross reference---entry "sans93"
+refers to entry "FPCA93", which doesn't exist
+Warning--I didn't find a database entry for "McBeth1983"
+Warning--I didn't find a database entry for "Collins1960"
+Warning--I didn't find a database entry for "FPCA93"
+Warning--empty publisher in Brownbridge1985
+Warning--empty booktitle in sans93
+Warning--empty year in sans93
+Warning--empty school in zorn89
+You've used 36 entries,
+            2118 wiz_defined-function locations,
+            742 strings with 9172 characters,
+and the built_in function-call counts, 11722 in all, are:
+= -- 1192
+> -- 459
+< -- 8
++ -- 194
+- -- 147
+* -- 832
+:= -- 1943
+add.period$ -- 111
+call.type$ -- 36
+change.case$ -- 179
+chr.to.int$ -- 0
+cite$ -- 40
+duplicate$ -- 451
+empty$ -- 943
+format.name$ -- 147
+if$ -- 2438
+int.to.chr$ -- 0
+int.to.str$ -- 36
+missing$ -- 32
+newline$ -- 184
+num.names$ -- 74
+pop$ -- 155
+preamble$ -- 1
+purify$ -- 145
+quote$ -- 0
+skip$ -- 321
+stack$ -- 0
+substring$ -- 847
+swap$ -- 90
+text.length$ -- 8
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 140
+warning$ -- 4
+while$ -- 128
+width$ -- 38
+write$ -- 399
+(There were 2 error messages)

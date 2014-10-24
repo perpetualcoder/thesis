@@ -1,0 +1,36 @@
+\section{Proposed Work}
+
+\iffalse
+Local creation of links only allows the creation of strong references when no
+cycle creation is possible. Consider the creation of a link from a source object $S$
+to a target object $T$. The link will be created strong if (i) the only strong
+links to $S$ are from roots i.e. there is no object $C$ with a strong link to $S$;
+(ii) object $T$ has no outgoing links i.e. it is newly created and its outgoing links are
+not initialized; and (iii) object $T$ is phantomized, and $S$ is not. All
+self-references are weak. Any other link is created phantom or weak.
+\fi
+
+
+In HPC community, applications are written for both the shared memory and 
+distributed memory systems. The preliminary work uses the centralized queue based 
+solution. This work can be applied to shared memory systems and distributed memory 
+systems. Although the solution is applicable to both of the systems, the distributed memory 
+would benefit more from completely decentralized solution. So the work is focused more 
+towards the decentralized/localized solution to the distributed garabge collection.
+
+
+\pagebreak
+\doublespacing
+
+
+Fundamental thesis of the work is any tracing based algorithm traces the entire memory. 
+But hybrid approaches like our algorithm only traces the affected subgraph. So in practical 
+use, the graph traversed to collect garbage is just infinitesimal of the total graph. 
+So the throughput of the garbage collector should be better in case of our approach. 
+We want to extend the concept of strong and weak to the distributed garbage collection. 
+Various approaches up until now available for the distributed garbage collectors are not complete.
+They are not practical solution for various reason. Our proposed work is to build a reliable, 
+fault-tolerant, linear garbage collector in the distributed memory system. Apart from 
+the designing the algorithm, we would also like to evaluate the performance of the the 
+previously described algorithm in a virtual machine and also  try to implement 
+the solution to be discovered in a scientific framework to compare with the other algorithms.
