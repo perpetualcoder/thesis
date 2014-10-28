@@ -1,21 +1,22 @@
 \section{Literature Review}
+\todo{...on an indirect method...now called a mark-sweep...}
 McCarthy invented the concept of Garbage Collection in 1959 ~\cite{mccarthy}. His works focused on indirect method of collecting 
-garbage which is now called mark-sweep or tracing collector. While Mark-sweep was the only method that was available at the early 1960's,
+garbage which is now called mark-sweep or tracing collector. While Mark-sweep \todo{You didn't capitalize last time} was the only method that was available at the early 1960's, \todo{This first clause does nothing for the sentence. You could probably omit it.}
  Collins designed a new method called reference counting, which is more direct method to detect garbage~\cite{Collins1960}. 
  Dijkstra et al~\cite{dijkstra} describes the correctness condition of tricolor tracing based collector. This work redefined the 
  way the collectors should be designed and how one can prove the properties of the collectors. Haddon et al ~\cite{haddon} realized 
  the fragmentation issues in the mark-sweep algorithm and designed a mark-compact algorithm. Fenichel et al~\cite{feni} and Cheney~\cite{cheney}
- provided new kind of algorithm based on copying the live objects which was called copying colletors. Based on Foderaro and Fateman ~\cite{fode81} observation, 
+ provided new kind of algorithm based on copying the live objects which was called copying collectors. Based on Foderaro and Fateman ~\cite{fode81} observation, 
  98\% of the objects collection has been allocated after the last collection. Several such observations were made and reported in ~\cite{zorn89,sans93}.
- Appel designed a simple generation garbage collection~\cite{Appel89}.
+ Appel \todo{Apple?} designed a simple generation garbage collection~\cite{Appel89}.
  
  While most of the literature up until now considered a indirect method of collecting garbage through tracing, the other form of collection is counting the references.
  While counting the references seems obvious way to solve the problem, McBeth's~\cite{McBeth1963} article on the inability to collect cyclic garbage structures by 
  reference counting method made the method less practical.
 
-Bobrow's ~\cite{Bobrow1980} solution to collect cylic garbage based on reference counting method was the first hybrid collector which uses both tracing and
+Bobrow's ~\cite{Bobrow1980} solution to collect cyclic garbage based on reference counting method was the first hybrid collector which uses both tracing and
 counting the references. Hughes ~\cite{hugh83,hugh87} identified the issues in the Bobrow's algorithm.
-It was proven by McBeth \cite{McBeth1963} in early sixties that reference counting collectors were unable to handle cyclic structures; several attempts to fix this problem appeared subsequently, e.g. \cite{Friedman1979,Bobrow1980,Lins2008}. We give details in Section \ref{subsection:otherrelated}.
+It was proven by McBeth \cite{McBeth1963} in early sixties that reference counting collectors were unable to handle cyclic structures; several attempts to fix this problem appeared subsequently, e.g. \cite{Friedman1979,Bobrow1980,Lins2008}. We give details in Section \ref{subsection:otherrelated}.\todo{This reference doesn't work}
 In contrast to the approach followed in \cite{Friedman1979,Bobrow1980,Lins2008} and several others,
 Brownbridge \cite{Brownbridge1985} proposed, in 1985, a strong/weak pointer algorithm to tackle the problem of reclaiming cyclic data structures by distinguishing cycle closing pointers (weak pointers) from other references (strong pointers) \cite{Jones1996}. %different algorithm to tackle the problem of reclaiming cyclic structures using strong and weak pointers.
 This algorithm relied on maintaining two invariants: (a) there are no cycles in strong pointers and (b) all items in the graph must be strongly reachable from the roots.
@@ -93,6 +94,7 @@ reference counting garbage collectors have become popular because
 they do not require all application threads to be stopped before the garbage collection algorithm can run~\cite{Levanoni2006}.
 Recent work in reference counting algorithms, e.g. \cite{Barabash2005,Levanoni2006,Bacon2001,Bacon:2001:JWC}, try to
 reduce concurrent operations and increase the efficiency of reference counting collectors.
+\todo{Forward reference. You haven't described our collector.}
 Since our collector is a reference counting collector, it can potentially benefit from the
 same types of optimizations discussed here. We leave that, however, to a future work.
 
