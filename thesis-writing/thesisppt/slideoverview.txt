@@ -1,0 +1,14 @@
+What is garbage collection?
+why memory management?
+Types of ways you can do.
+Problem with manual GC.
+Advantages of GC.
+TimeLine and Literature
+Hypothesis
+Explain why the hypothesis could be right?
+Preliminary work towards that hypothesis
+proposed work
+Evaualtion Strategy
+Conclusion and Future Work
+Q&A
+
