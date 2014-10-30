@@ -1,2 +1,157 @@
 \section{Literature Review}
-This is the section where we write about literature review.
+McCarthy invented the concept of Garbage Collection in 1959 ~\cite{mccarthy}. His works focused on indirect method of collecting 
+garbage which is now called mark-sweep or tracing collector. While Mark-sweep was the only method that was available at the early 1960's,
+ Collins designed a new method called reference counting, which is more direct method to detect garbage~\cite{Collins1960}. 
+ Dijkstra et al~\cite{dijkstra} describes the correctness condition of tricolor tracing based collector. This work redefined the 
+ way the collectors should be designed and how one can prove the properties of the collectors. Haddon et al ~\cite{haddon} realized 
+ the fragmentation issues in the mark-sweep algorithm and designed a mark-compact algorithm. Fenichel et al~\cite{feni} and Cheney~\cite{cheney}
+ provided new kind of algorithm based on copying the live objects which was called copying colletors. Based on Foderaro and Fateman ~\cite{fode81} observation, 
+ 98\% of the objects collection has been allocated after the last collection. Several such observations were made and reported in ~\cite{zorn89,sans93}.
+ Appel designed a simple generation garbage collection~\cite{Appel89}.
+ 
+ While most of the literature up until now considered a indirect method of collecting garbage through tracing, the other form of collection is counting the references.
+ While counting the references seems obvious way to solve the problem, McBeth's~\cite{McBeth1963} article on the inability to collect cyclic garbage structures by 
+ reference counting method made the method less practical.
+
+Bobrow's ~\cite{Bobrow1980} solution to collect cylic garbage based on reference counting method was the first hybrid collector which uses both tracing and
+counting the references. Hughes ~\cite{hugh83,hugh87} identified the issues in the Bobrow's algorithm.
+It was proven by McBeth \cite{McBeth1963} in early sixties that reference counting collectors were unable to handle cyclic structures; several attempts to fix this problem appeared subsequently, e.g. \cite{Friedman1979,Bobrow1980,Lins2008}. We give details in Section \ref{subsection:otherrelated}.
+In contrast to the approach followed in \cite{Friedman1979,Bobrow1980,Lins2008} and several others,
+Brownbridge \cite{Brownbridge1985} proposed, in 1985, a strong/weak pointer algorithm to tackle the problem of reclaiming cyclic data structures by distinguishing cycle closing pointers (weak pointers) from other references (strong pointers) \cite{Jones1996}. %different algorithm to tackle the problem of reclaiming cyclic structures using strong and weak pointers.
+This algorithm relied on maintaining two invariants: (a) there are no cycles in strong pointers and (b) all items in the graph must be strongly reachable from the roots.
+
+Some years after the publication, Salkild \cite{Salkild1987} showed that Brownbridge's algorithm
+\cite{Brownbridge1985} could reclaim objects prematurely in some
+configurations, e.g. a double cycle. If the last strong pointer (or link) to
+an object in one cycle but not the other was lost, Brownbridge's
+method would incorrectly claim nodes from the cycle.
+Salkild \cite{Salkild1987} corrected this problem by proposing
+that if the last strong link was removed from an object which still
+had weak pointers, a collection process should re-start from that node.
+While this approach eliminated the premature deletion problem, it introduced a
+potential non-termination problem.
+
+Subsequently, Pepels et al.~\cite{Pepels1988} proposed a new algorithm based on
+Brownbridge-Salkild's algorithm and solved the problem of non-termination by
+using a marking scheme. In their algorithm, they used two kinds of mark: one to
+prevent an infinite number of searches, and the other to guarantee termination
+of each search. Although correct and terminating, Pepels et al.'s algorithm is far more
+complex than Brownbridge-Salkild's algorithm and in some cyclic structures the
+cleanup cost complexity becomes at least
+exponential in the worst-case \cite{Jones1996}. This is due to the fact that when
+cycles occur, whole state space searches from
+each node in the cyclic graph must be initiated, possibly many times. After Pepels et al.'s algorithm, we are not aware
+of any other work on reducing the cleanup cost or complexity of the Brownbridge
+algorithm. Moreover, there is no concurrent collection technique using this approach which can be applicable for the garbage collection in modern multiprocessors.
+
+Typical hybrid reference count and collection systems, e.g. \cite{Bacon2001,Levanoni2006,Bacon:2001:JWC,Barabash2005,Lins2008}, which use a reference counting collector combined with a tracing collector or cycle collector,
+must perform nontrivial work whenever a reference count is decreased and does
+not reach zero. The modified Brownbridge system, with three types of reference counts, must
+perform nontrivial work only when the strong reference count reaches zero and
+the weak reference count is still positive, a significant reduction \cite{Brownbridge1985,Jones1996}.
+Garbage collection is
+an automatic memory management technique which is considered to be an important tool for developing fast as well as reliable software.  Garbage collection has been studied extensively in computer science for more than five decades, e.g., \cite{McBeth1963,Brownbridge1985,Salkild1987,Pepels1988,Bacon2001,Bacon:2001:JWC,Barabash2005,Jones1996}. %,Wilson1992}. %We refer readers to these books \cite{Jones1996,Jones2011} and these surveys \cite{Chase1987,Wilson1992} for the overview of the research in this field.
+Reference counting is a widely-used form of garbage collection whereby each object has a count of the number of references to it; garbage is identified by having a reference count of zero \cite{Bacon2001}.
+Reference counting approaches were first developed for LISP by Collins \cite{Collins1960}.
+% in the context of a process suspension problem in LISP \cite{McCarthy1960}.
+%Improvements to the initial algorithms were proposed in several subsequent papers.
+Improved variations were proposed in several subsequent papers, e.g. \cite{Friedman1979,Hughes1987,Jones1996,Lins2008,Levanoni2006}. We direct readers to Shahriyar et al.~\cite{Shahriyar:2012} for the valuable overview of the current state of reference counting collectors.
+
+It was noticed by McBeth \cite{McBeth1963} in early sixties that reference counting collectors were unable to handle cyclic structures.
+After that several reference counting collectors were developed, e.g. \cite{Friedman1979,Bobrow1980,Lins:1992:CRC,Lins:2002:EAC}.
+The algorithm in Friedman \cite{Friedman1979} dealt with recovering cyclic data in immutable structures, whereas Bobrow's algorithm \cite{Bobrow1980}
+can reclaim all cyclic structures but relies on the explicit
+information provided by the programmer. 
+Trial deletion approach was studied by Christopher \cite{Christopher1984} which tries to collect cycles by identifying groups of self-sustaining objects. 
+Lins \cite{Lins:1992:CRC} used a cyclic buffer to reduce repeated scanning of the same nodes in their mark-scan algorithm for cyclic reference counting. Moreover, in \cite{Lins:2002:EAC}, Lins improved his algorithm  from \cite{Lins:1992:CRC} by eliminating the scan operation through the use of a Jump-stack data structure.
+%Reference counting garbage collectors developed recently were augmented with either a tracing collector or a cycle detector to reclaim cyclic structures, e.g. \cite{Bacon2001,Paz2007,Lins2008}.
+%We refer the reader to \cite{Abdullahi1998,Jones2011} for details.
+%For example, the reference counting collector proposed in \cite{Paz2007} combines the sliding view collector of \cite{Levanoni2006} with the cycle collector of \cite{Bacon2001}.
+
+
+%Friedman and Wise's algorithm \cite{Friedman1979} was specialized to recovering cyclic data in immutable structures. Bobrow's algorithm \cite{Bobrow1980}
+%can reclaim all cyclic structures but relies on the explicit
+%information provided by the programmer. Hughes\cite{Hughes1987}, in his unpublished note, improved Bobrow's algorithm by avoiding the need of the extra information provided by the programmer.
+%The details of other subsequent work is this area can be found in \cite{Chase1987,Wilson1992,Jones1996,Jones2011,Lins2006,Lins2008,Levanoni2006,Axford1990}.
+
+% and some recent work on cyclic reference counting is in \cite{Lins2006,Lins2008,,Levanoni2006}.
+
+%In 1985, Brownbridge \cite{Brownbridge1985} proposed a different algorithm to tackle the problem of reclaiming cyclic structures using strong and weak pointers. This algorithm was relied on maintaining two invariants: (a) there are no cycles in strong pointers and (b) all items in the graph must be strongly reachable from the root node. Unfortunately, his algorithm was shown incorrect by  Salkild \cite{Salkild1987}. Salkild observed that Brownbridge's algorithm sometimes reclaims objects prematurely and gave a new algorithm that corrected Brownbridge's algorithm in \cite{Salkild1987}. However, this algorithm suffers from non-termination in certain situations due to the fact that it may need infinite number of searches to determine the garbage cells. Pepels et al.~\cite{Pepels1988} proposed a new algorithm based on Brownbridge-Salkild's
+%algorithm and solved the problem of non-termination by using a marking scheme. In their algorithm, they used two kinds of mark: one to prevent an infinite number of searches, and the other to guarantee termination of each search. Although correct and terminating, the algorithm is far more complex than  Brownbridge-Salkild's algorithm and in some cyclic structures the cleanup cost complexity of Pepel et al.'s algorithm becomes exponential in the worst-case \cite{Jones1996}.
+%After Pepel et al.'s algorithm, we are not aware of any other work on making the cleanup cost complexity of Brownbridge's algorithm linear.
+%The algorithm we present in this paper removes all the limitations of original Brownbridge's algorithm \cite{Brownbridge1985} and also its variants \cite{Salkild1987,Pepels1988} and provides linear number of searches, guarantees termination, and limits the cleanup cost complexity to $\cO(N)$, in the worst-case, where $N$ is the number of cells in a cycle.
+
+%mark-sweep \cite{Cohen1967}.
+
+%\input{distributed_refs}
+
+% Note: Gokarna had a lot of this backwards. He was contrasting reference counting
+% to stop-the-world collectors, and the kinds of write barriers he was concerned with
+% are present in our system.
+With the advancement of multiprocessor architectures,
+reference counting garbage collectors have become popular because
+they do not require all application threads to be stopped before the garbage collection algorithm can run~\cite{Levanoni2006}.
+Recent work in reference counting algorithms, e.g. \cite{Barabash2005,Levanoni2006,Bacon2001,Bacon:2001:JWC}, try to
+reduce concurrent operations and increase the efficiency of reference counting collectors.
+Since our collector is a reference counting collector, it can potentially benefit from the
+same types of optimizations discussed here. We leave that, however, to a future work.
+
+%In contrast to simple stop-the-world garbage collectors which completely halt execution of the application to run a collection cycle, concurrent garbage collectors (and also incremental garbage collectors, e.g. \cite{Barabash2005}) interleave the collection cycles with the application to reduce the
+%disruption of the stop-the-world approach.
+%However, reference counting based garbage collectors have an inherence limitation with respect to concurrency in multiprocessor architectures in the sense that the update of the reference
+%counts must be atomic since they are being updated by all
+%application threads, and, when updating a pointer,
+%a thread must know the previous value of the pointer-slot
+%being updated despite many parallel writes from concurrent application threads \cite{Levanoni2006}.
+%
+%remove the requirement of atomic and synchronization operations for updating pointers and reference counts while running them on multiprocessors and also
+%
+%% Therefore,
+%in order to make better use of the processing capacity and the parallelism  available in multiprocessors, reference counting based concurrent
+%collectors have been presented and studied, e.g. \cite{Barabash2005,Levanoni2006,Bacon2001,Bacon:2001:JWC}. % garbage collection is also considered for several other particular systems, namely concurrent systems, real-time systems, mobile actor systems, and asynchronous distributed systems \cite{Pizlo2008,Huelsbergen1998,Wang2006,Wang2010,Kafura1995,Veiga2005}. Pizlo et al. \cite{Pizlo2008} studied concurrent real-time garbage collectors.
+%However, reference counting based garbage collectors have an inherence limitation with respect to concurrency in multiprocessor architectures in the sense that the update of the reference
+%counts must be atomic since they are being updated by all
+%application threads, and, when updating a pointer,
+%a thread must know the previous value of the pointer-slot
+%being updated despite many parallel writes from concurrent application threads \cite{Levanoni2006}.
+%Therefore, these papers \cite{Barabash2005,Levanoni2006,Bacon2001,Bacon:2001:JWC} shed light on how to obtain better algorithms by focusing thoroughly on reducing synchronization requirements and improving throughput and latency.
+
+However, as mentioned earlier, reference counting garbage collectors cannot collect cycles \cite{McBeth1963}. Therefore, concurrent reference counting collectors \cite{Barabash2005,Levanoni2006,Bacon2001,Bacon:2001:JWC,Paz2007,Lins2008} use other techniques, e.g. they supplement the reference counter with a tracing collector or a cycle detector, together with their concurrent reference counting algorithm. For example, the reference counting collector proposed in \cite{Paz2007} combines the sliding view reference counting concurrent collector of \cite{Levanoni2006} with the cycle collector of \cite{Bacon2001}. Our collector has some similarity with these, in that our $Phantomization$ process may traverse many nodes. It should, however, trace fewer nodes and do so less frequently. Recently, Frampton provides a detailed study of cycle collection in his PhD thesis \cite{Frampton2010}.
+%To the best of our knowledge, we are not aware of any existing reference counting algorithm that itself can reclaim cycles.
+%\todo{Steve: is it OK to say this statement}
+%We note here that it is challenging to develop a variation of referencing counting collectors which collect cycles without the need of an auxiliary collector dedicated for reclaiming cycles. Our algorithm is a significant step towards this direction. xxx
+
+%a backup tracing collector or a cycle detector to reclaim cyclic structures \cite{Bacon2001,Paz2007,Lins2008}.
+
+%Otherwise, a confusion occurs in the bookkeeping of
+%the reference counts. Thus, the naive solution requires a lock
+%on any update operation. More advanced solutions have recently reduced this overhead to a compare-and-swap operation, which is still a time consuming write-barrier. Recent developments lead to better algorithm \cite{Levanoni2006}\cite{Barabash2005} based on reference counting but they can not collect cycles. They used mark-and-sweep algorithm together with the reference counting algorithm \cite{Levanoni2006}.
+%Bacon et al. \cite{Bacon2001,Bacon:2001:JWC} also studied on-the-fly reference counting algorithms for multiprocessors. These all work focused on reducing synchronization and improving throughput and latency. They did not elaborate further on how to avoid the limitations of reference counting algorithms in reclaiming cycles.
+%Huelsbergen and Winterbottom \cite{Huelsbergen1998} extended the mark-and-sweep garbage collection technique to a concurrent setting.
+%A parallel, incremental, mostly concurrent garbage collector for servers is given in \cite{Barabash2005}.
+
+%Recently, garbage collection is also considered for several other particular systems, namely concurrent systems, real-time systems, mobile actor systems, and asynchronous distributed systems \cite{Pizlo2008,Huelsbergen1998,Wang2006,Wang2010,Kafura1995,Veiga2005}. Pizlo et al. \cite{Pizlo2008} studied concurrent real-time garbage collectors.
+%Huelsbergen and Winterbottom \cite{Huelsbergen1998} extended the mark-and-sweep garbage collection technique to a concurrent setting.
+%A parallel, incremental, mostly concurrent garbage collector for servers is given in \cite{Barabash2005}.
+%%Distributed garbage collection for mobile actor systems is studied in several papers, e.g. \cite{Wang2006,Wang2010}, using the pseudo root approach and also through vertex-preserving actor-to-object graph transformations.
+%%Veiga and Ferreira \cite{Veiga2005} presented a garbage collection technique for asynchronous distributed systems.
+%%Kafura et al. \cite{Kafura1995} presented a distributed and concurrent garbage collection algorithm for active objects. Their algorithm is snapshot based.
+
+
+
+Herein we have tried to cover a sampling of garbage collectors that are most relevant to our work.
+
+Apple's ARC memory management system makes a distinction between ``strong'' and ``weak'' pointers, similar to what we describe here. In the ARC memory system, however, the type of each pointer must be specifically designated by the programmer, and this type will not change during the program's execution. If the programmer gets the type wrong, it is possible for ARC to have strong cycles as well as prematurely deleted objects. With our system, the pointer type is automatic and can change during the execution. Our system protects against these possibilities, at the cost of lower efficiency.
+
+There exist other concurrent techniques optimized for both uniprocessors as well as multiprocessors. Generational concurrent garbage collectors were also studied, e.g. \cite{Printezis:2000}. Huelsbergen and Winterbottom \cite{Huelsbergen1998} proposed an incremental algorithm for the concurrent garbage collection that is a variant of mark-and-sweep collection scheme first proposed in \cite{McCarthy1960}.
+%Recently, McGachey et al. \cite{McGachey2008} considered how to build a concurrent garbage collector from a state of the art software transactional memory system \cite{Shavit1997}. 
+Furthermore, garbage collection is also considered for several other systems, namely real-time systems %, mobile actor systems, 
+and asynchronous distributed systems, e.g. \cite{Pizlo2008,Veiga2005}. %Wang2010,Huelsbergen1998,Kafura1995,
+%However, we do not explore this area in this present work, but we conjecture that our technique can be useful to these systems and deserves further work (some possible directions are outlined in Section \ref{section:future-work}).
+
+%Brownbridge's algorithm \cite{Brownbridge1985}, and its subsequent improvements due to Salkild\cite{Salkild1987}, and Pepels et al. \cite{Pepels1988}, which we describe later in Section \ref{section:exponential}.
+
+Concurrent collectors are gaining popularity. The concurrent collector described in Bacon and Rajan~\cite{Bacon2001} can be considered to be one of the more efficient reference counting concurrent collectors. The algorithm uses two counters per object, one for the actual reference count and other for the cyclic reference count. Apart from the number of the counters used, the cycle detection strategy requires a minimum of two traversals of cycle when the cycle is reachable and eleven cycle traversals when the cycle is garbage.
+%The necessity of eleven traversals of cyclic objects for safety conditions and difficulty in making the algorithm parallel easily began as the motivation of the work. So our work concentrates on the concurrency as well as parallel aspect of the collectors along with amortizing the number of the traversal required in the cycle detection strategies. Our approach uses two traversals for the deletion of the cycle and needs two traversal of the affected graph when the object is speculated wrongly as cycle. So we give tight upper bound on the number of the traversal happens in the affected graph for every event in the graph.
+
+%\todo{Hari, say something more about \cite{Bacon2003,Bacon2001,Bacon:2001:JWC}}

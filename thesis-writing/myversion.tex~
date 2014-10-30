@@ -1,5 +1,5 @@
- \documentclass[12pt,letterpaper]{lsuetd}
-% \document[12pt,letterpaper]{article}
+%  \documentclass[12pt,letterpaper]{lsuetd}
+\documentclass{article}
 \usepackage{setspace,graphics,dsfont,verbatim,paralist,indentfirst}
 \setlength{\topmargin}{-0.5in}
 \setlength{\textheight}{9.0in}
@@ -59,39 +59,53 @@
 \begin{document}
 \renewcommand\@pnumwidth{1.55em}
 \renewcommand\@tocrmarg{9.55em}
-\renewcommand*\l@chapter{\@dottedtocline{0}{1.5em}{2.3em}}
+% \renewcommand*\l@chapter{\@dottedtocline{0}{1.5em}{2.3em}}
 \renewcommand*\l@figure{\@dottedtocline{1}{0em}{3.1em}}
 \let\l@table\l@figure
 
 \pagenumbering{roman}
 \thispagestyle{empty}
-\begin{center}
+\begin{titlepage}
+\vspace*{\fill}
+  \begin{center}
 %The title page is first created.
-TOWARD SCALABLE, CONCURRENT, PARALLEL GARBAGE COLLECTION
+\textbf{TOWARD SCALABLE, CONCURRENT, PARALLEL GARBAGE COLLECTION}
 
-\vfill
-%\doublespacing
-A Thesis Proposal \\
-\singlespacing
-Submitted to the Graduate Faculty of the \\
-Louisiana State University and \\
-Agricultural and Mechanical College \\
-in partial fulfillment of the \\
-requirements for the degree of \\
-Doctor of Philosophy \\
-%\doublespacing
-in \\
+% \vfill
+% %\doublespacing
+% A Thesis Proposal \\
+% \singlespacing
+% Submitted to the Graduate Faculty of the \\
+% Louisiana State University and \\
+% Agricultural and Mechanical College \\
+% in partial fulfillment of the \\
+% requirements for the degree of \\
+% Doctor of Philosophy \\
+% %\doublespacing
+% in \\
                                        
-The Department of Computer Science \\
-\singlespacing
-\vfill
+% The Department of Computer Science \\
+% \singlespacing
+% \vfill
 
-by \\
-Hari Krishnan \\
-B.Tech., Anna University, 2010  \\
-%If necessary, copy and paste the previous line here to include a master's degree.
-May 2016
+% by \\
+%\vfill
+\doublespacing
+\vspace{2 in}
+ Hari Krishnan \\
+ Thesis Proposal \\
+\textbf{Committee Members :}\\
+                    Konstantin Busch (advisor)\\
+                      Steven R Brandt (co-advisor)\\
+                      Gerald Baumgartner\\
+ 
+% B.Tech., Anna University, 2010  \\
+% %If necessary, copy and paste the previous line here to include a master's degree.
+% May 2016
 \end{center}
+\vspace*{\fill}
+\end{titlepage}
+
 \pagebreak
 %The Copyright Page and Dedication sections can be added here, if desired.
 
@@ -171,7 +185,7 @@ May 2016
 %\singlespacing
 % \chapter{Literature Review}
 %\doublespacing
-\section{Literature Review}
+% \section{Literature Review}
 \input{litrev}
 % \pagebreak
 %\singlespacing
@@ -201,13 +215,14 @@ May 2016
 %\singlespacing
 % \chapter{Future Work}
 %\doublespacing
-\input{Futurework}
+%\input{Futurework}
 % \pagebreak
 %\singlespacing
 %To insert additional chapters, copy the previous five lines, using chapterX as the argument of the 
 %\input command for Chapter X, where X=6,7,8,...
-\addtocontents{toc}{\vspace{12pt}}
-\addcontentsline{toc}{chapter}{\hspace{-1.6em} REFERENCES}
+% \addtocontents{toc}{\vspace{12pt}}
+% \addcontentsline{toc}{chapter}{\hspace{-1.6em} REFERENCES}
+% \section{References}
 %\begin{thebibliography}{999}
 \vspace{0.9em}
 %\input{ref}
@@ -216,9 +231,11 @@ May 2016
 %\end{thebibliography}
 \pagebreak
 \singlespacing
-\addtocontents{toc}{\vspace{12pt} \hspace{-1.8em} APPENDIX \vspace{-1em}}
+%\addtocontents{toc}{\vspace{12pt} \hspace{-1.8em} APPENDIX \vspace{-1em}}
 \appendix
-\chapter{Multi-Threaded Collector Algorithm}
+%\chapter{Multi-Threaded Collector Algorithm}
+\section{Appendix}
+\subsection{Multi-Threaded Collector Algorithm}
 \vspace{0.5em}
 \input{algo1}
 \pagebreak
@@ -242,5 +259,4 @@ May 2016
 
 
 \end{document}
-
 

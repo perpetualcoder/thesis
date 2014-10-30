@@ -222,7 +222,7 @@ author = "Rafael Dueire Lins",
  numpages = {29},
 }
 
-@article{collins,
+@article{Collins1960,
  author = {Collins, George E.},
  title = {A method for overlapping and erasure of lists},
  journal = {Commun. ACM},
@@ -246,7 +246,6 @@ author = "Rafael Dueire Lins",
 @inproceedings{sans93,
 title = "Generational Garbage Collection for {H}askell",
 author = "Patrick M. Sansom and Peyton Jones, Simon L. ",
-crossref = "FPCA93",
 doi={10.1145/165180.165195},
 pages={106--116},
 URL = "ftp://ftp.dcs.gla.ac.uk/pub/glasgow-fp/papers/gen-gc-for-haskell.ps.Z"
@@ -808,8 +807,8 @@ language={English}
  address = {New York, NY, USA},
 }
 
-@misc{url:refimpl,
-        url = {https://github.com/stevenrbrandt/MultiThreadBrownbridge},
+misc{url:refimpl,
+    url = {https://github.com/stevenrbrandt/MultiThreadBrownbridge},
 }
 
 @inproceedings{Shahriyar:2012,
