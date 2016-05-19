@@ -27,6 +27,7 @@
 \usepackage{latexsym}
 \usepackage{amsfonts}
 \usepackage{wasysym}
+\usepackage{algpseudocode}
 %\usepackage{pslatex}
 %\usepackage{natbib}
 \usepackage{tocloft}
@@ -35,12 +36,14 @@
 \usepackage{indentfirst}
 %\usepackage{lmodern}
 \usepackage{subcaption}
+\usepackage{algorithm}
+%\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
 %\usepackage{algorithm}
 %\usepackage{algorithmic}
 \usepackage{listings}
 \usepackage{pgfplots}
-\usepackage[ruled]{algorithm2e}
-\usepackage[noend]{algpseudocode}
+%\usepackage[ruled]{algorithm2e}
+%\usepackage[noend]{algpseudocode}
 
 %\usepackage[table]{xcolor}% http://ctan.org/pkg/xcolor
 \usepackage{enumitem}
@@ -105,7 +108,7 @@ belowcaptionskip=0pt,
 }
 
 %%%%%%%%%%%% General Macros %%%%%%%%%%%%%%
-
+\begin{comment}
 \newtheorem{thm} {Theorem} % A counter for Theorems
 \newcommand {\BT} {\begin{thm}}
 \newcommand {\ET} {\end{thm}}
@@ -139,7 +142,7 @@ belowcaptionskip=0pt,
 \newtheorem{case}{Case} % A Counter for Cases
 \newcommand {\BC} {\begin{case}}
 \newcommand {\EC} {\end{case}}
-
+\end{comment}
 %%%%%%%%%%%%% Shared Constraint Macros %%%%%%%%%%%%
 \newcommand{\MOD}[1]{\textcolor{red}{#1}}
 
@@ -222,6 +225,77 @@ belowcaptionskip=0pt,
 \newcommand{\vup}{v^\uparrow}
 \newcommand{\vdown}{v^\downarrow}
 \newcommand{\md}{\mathsf{maxDepth}}
+
+
+
+% Paper tex commands 
+
+\newcommand{\cO}{{\cal O}}
+\newcommand{\src}{{\sc SRC}}
+\newcommand{\wrc}{{\sc WRC}}
+
+%\newcommand{\todo}[1]{{\color{blue}$\blacksquare$~\textsf{[TODO: #1]}}}
+\newcommand{\update}[1]{{\color{magenta}~\textsf{note:: #1}}}
+
+%\newcommand{\sq}{\hbox{\rlap{$\sqcap$}$\sqcup$}}
+%\newcommand{\qed}{\hspace*{\fill}\sq}
+%\newenvironment{proof}{\noindent {\bf Proof.}\ }{\qed\par\vskip 4mm\par}
+%\newenvironment{proofs}{\noindent {\bf Proof. (sketch)}\ }{\qed\par\vskip 4mm\par}
+%\newenvironment{corallary}{\noindent {\bf Corollary.}\ }{\qed\par\vskip 4mm\par}
+
+%\newtheorem{theorem}{Theorem}[section]
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem{claim}[theorem]{Claim}
+%\newtheorem{fact}[theorem]{Fact}
+%\newtheorem{corollary}[theorem]{Corollary}
+%\newtheorem{definition}{Definition}
+%\newtheorem{observation}{Observation}
+%\newtheorem{invariant}{Invariant}
+
+
+% paper tex commands over
+
+
+% DISTRIBUTED PAPER COMMANDS
+\newcommand\outneighbors{\mathop{\mbox{$out$-$\mathit{neighbors}$}}}
+\newcommand\inneighbors{\mathop{\mbox{$in$-$\mathit{neighbors}$}}}
+\newcommand\maxweight{\mathop{\mbox{$max$-$\mathit{weight}$}}}
+\newcommand\nonstrong{\mathop{\mbox{$non$-$\mathit{strong}$}}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemmas}{Lemma}
+\newtheorem{axioms}{Axiom}
+\newtheorem{lemma}[lemmas]{Lemma}
+\newtheorem{axiom}[axioms]{Axiom}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{corollary}[theorem]{Corollary}
+%\newtheorem{definition}{Definition}
+\newtheorem{observation}[lemmas]{Corollary}
+\newtheorem{invariant}{Invariant}
+
+\newtheorem*{rep@theorem}{\rep@title}
+\newcommand{\newreptheorem}[2]{%
+	\newenvironment{rep#1}[1]{%
+		\def\rep@title{#2 \ref{##1}}%
+		\begin{rep@theorem}}%
+		{\end{rep@theorem}}}
+
+
+\newreptheorem{theorem}{Theorem}
+%\newtheorem{lemma}{Lemma}
+\newreptheorem{lemma}{Lemma}
+
+
+
+\newcommand{\sq}{\hbox{\rlap{$\sqcap$}$\sqcup$}}
+%\newcommand{\qed}{\hspace*{\fill}\sq}
+%\newenvironment{proof}{\noindent {\bf Proof.}\ }{\qed\par\vskip %4mm\par}
+\newenvironment{proofs}{\noindent {\bf Proof (sketch).}\ }{\qed\par\vskip
+	0mm\par}
+
+%END OF IT
+
 
 \newcommand{\TFIDF}{\tt TF-IDF}
 \def\parent{\mathit{parent}}
@@ -344,11 +418,16 @@ belowcaptionskip=0pt,
  \input{tex/preliminaries}
 %
 
- 
-  \chapter{Ranked Document Retrieval with Multiple Patterns}
- \label{forbid}
-   \input{tex/forbid}
+\end{comment}
 
+ 
+  \chapter{Shared Memory Multi-processor Garbage Collection}
+ \label{shared}
+   \input{paper}
+  \chapter{Distributed Memory Multi-collector Garbage Collection}
+     \label{distributed}
+     \input{newpaper}
+\begin{comment}
  \chapter{Document Retrieval with Forbidden Extension}
  \label{forbidext}
  \input{tex/forbidext}
