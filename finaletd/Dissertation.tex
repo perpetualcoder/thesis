@@ -1,0 +1,405 @@
+\documentclass[12pt,letterpaper]{report}
+\usepackage{etex}
+\addtolength{\textwidth}{1.00in}
+\addtolength{\textheight}{0.5in}
+\addtolength{\evensidemargin}{-0.50in}
+\addtolength{\oddsidemargin}{-0.50in}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
+
+\usepackage[in]{fullpage}
+\usepackage{graphicx,enumerate}
+%\usepackage[caption=false]{subfig}
+\usepackage{subcaption}
+\usepackage{xcolor}
+%\usepackage{wrapfig}
+% \usepackage{outlines}
+%\usepackage{breakurl}
+\usepackage{booktabs}
+\usepackage{tabulary}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{comment}
+\usepackage{rotating}
+\usepackage{times}
+\usepackage{setspace,thesis}
+\usepackage{latexsym}
+\usepackage{amsfonts}
+\usepackage{wasysym}
+%\usepackage{pslatex}
+%\usepackage{natbib}
+\usepackage{tocloft}
+\usepackage{paralist}
+\usepackage{Dissertation}
+\usepackage{indentfirst}
+%\usepackage{lmodern}
+\usepackage{subcaption}
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{listings}
+\usepackage{pgfplots}
+\usepackage[ruled]{algorithm2e}
+\usepackage[noend]{algpseudocode}
+
+%\usepackage[table]{xcolor}% http://ctan.org/pkg/xcolor
+\usepackage{enumitem}
+\usepackage{standalone}
+\usepackage{booktabs, dcolumn}
+\captionsetup{compatibility=false}
+
+% microtype greatly improves general appearance of the text using different
+% techniques, such as margin kerning (protrusion), extra kerning, expansion,
+% tracking, and spacing.
+\usepackage{microtype}
+%\captionsetup{compatibility=false}
+% \usepackage{pdftricks}
+% \usepackage[usenames,dvipsnames]{pstricks}
+% \usepackage{auto-pst-pdf}
+% \usepackage{pst-grad} % For gradients
+% \usepackage{pst-plot} % For axes
+
+ \doublespacing
+
+%\usepackage{caption}
+%\captionsetup{format=plain,margin=10pt,labelfont=bf}
+
+\usepackage[margin=0.7in,nohead,foot=.3in]{geometry}
+\usepackage{hyperref}
+\usepackage{hypcap}
+
+
+\lstset{ %
+language=C,                   % choose the language of the code
+basicstyle=\normalsize,       % the size of the fonts that are used for the code
+%numbers=none,                 % where to put the line-numbers
+%numberstyle=\scriptsize,      % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it's 1 each line will be numbered
+numbersep=15pt,                  % how far the line-numbers are from the code
+%backgroundcolor=none,  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,                   % adds a frame around the code
+%frame=none,                    % adds a frame around the code
+tabsize=2,                  % sets default tabsize to 2 spaces
+%captionpos=b,                  % sets the caption-position to bottom
+captionpos=n,
+%basicstyle=\small,
+%basicstyle=\small\sffamily,
+basicstyle=\ttfamily\small,
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+columns=fullflexible,
+title=\lstname,                 % show the filename of files included with \lstinputlisting; also try caption instead of title
+escapeinside={\%*}{*)},          % if you want to add a comment within your code
+morekeywords={},
+literate={dgemm}{\textbf{dgemm}}1,
+deletekeywords={for},
+aboveskip=2pt,
+belowskip=2pt,
+lineskip=0pt,
+xleftmargin=1em,
+abovecaptionskip=0pt,
+belowcaptionskip=0pt,
+}
+
+%%%%%%%%%%%% General Macros %%%%%%%%%%%%%%
+
+\newtheorem{thm} {Theorem} % A counter for Theorems
+\newcommand {\BT} {\begin{thm}}
+\newcommand {\ET} {\end{thm}}
+
+\newtheorem{lem}  {Lemma} % A counter for Lemmas
+\newcommand {\BL} {\begin{lem}} % begin Lemma
+\newcommand {\EL} {\end{lem}} % End Lemma
+
+\newtheorem{cor}  {Corollary} % A counter for Corollary
+\newcommand {\BCR} {\begin{cor}}
+\newcommand {\ECR} {\end{cor}}
+
+\newtheorem{Obs}  {Observation} % A counter for Corollary
+\newcommand {\BO} {\begin{Obs}}
+\newcommand {\EO} {\end{Obs}}
+
+\newtheorem{defn}  {Definition} % A counter for Corollary
+\newcommand {\BD} {\begin{defn}}
+\newcommand {\ED} {\end{defn}}
+\newtheorem{defi} {Problem} % A counter for Theorems
+\newtheorem{observation}{Observation}
+\newcommand {\BDE} {\begin{defi}}
+\newcommand {\EDE} {\end{defi}}
+\newtheorem{prob}  {Problem} % A counter for Corollary
+\newcommand {\BP} {\begin{prob}}
+\newcommand {\EP} {\end{prob}}
+\newtheorem{fact} {Fact} % Fact
+\newcommand {\BF} {\begin{fact}}
+\newcommand {\EF} {\end{fact}}
+
+\newtheorem{case}{Case} % A Counter for Cases
+\newcommand {\BC} {\begin{case}}
+\newcommand {\EC} {\end{case}}
+
+%%%%%%%%%%%%% Shared Constraint Macros %%%%%%%%%%%%
+\newcommand{\MOD}[1]{\textcolor{red}{#1}}
+
+
+\newcommand{\Q}{{\cal Q}}
+\newcommand{\tpath}{\mathsf{path}}
+\newcommand{\Left}{\ensuremath\mathit{left}}
+\newcommand{\Low}{\ensuremath\mathit{low}}
+\newcommand{\Score}{\ensuremath\mathit{score}}
+\newcommand{\Prefix}{\ensuremath\mathit{prefix}}
+\newcommand{\Depth}{\ensuremath\mathit{depth}}
+\newcommand{\Subtree}{\ensuremath\mathit{subtree}}
+\newcommand{\Pivot}{\ensuremath\mathit{pivot}}
+\newcommand{\Region}{\ensuremath\mathit{region}}
+\newcommand{\CPath}{\ensuremath\mathit{c\makebox{-}path}}
+\newcommand{\CDepth}{\ensuremath\mathit{c\makebox{-}depth}}
+\newcommand{\CRank}{\ensuremath\mathit{c\makebox{-}rank}}
+
+
+\long\def\symbolfootnote[#1]#2{\begingroup%
+\def\thefootnote{\fnsymbol{footnote}}\footnote[#1]{#2}\endgroup}
+\newcommand{\ssbox}{\hbox{\vrule height10pt depth 3.5pt width0pt}}
+
+\newcommand{\SecUp}{\vspace{-2mm}}
+\newcommand{\SecDown}{\vspace{-2mm}}
+\newcommand{\SubSecUp}{\vspace{-1mm}}
+\newcommand{\SubSecDown}{\vspace{-1mm}}
+\newcommand{\todo}[1]{\newline TO DO #1\newline}
+\newcommand{\no}[1]{ }
+
+\newcommand{\cQ}{{\cal Q}}
+\newcommand{\cP}{{\cal P}}
+\newcommand{\A}{\mathsf{A}}
+\newcommand{\B}{\mathsf{B}}
+\newcommand{\D}{{\cal D}}
+\newcommand{\I}{{\cal I}}
+\newcommand{\U}{{\cal U}}
+\newcommand{\s}{{\cal S}}
+\renewcommand{\L}{{\cal L}}
+\newcommand{\cS}{{\cal S}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\occ}{occ}
+\newcommand{\CSA}{\mathsf{CSA}}
+\newcommand{\ST}{\mathsf{ST}}
+\newcommand{\DA}{\mathsf{DA}}
+\newcommand{\SA}{\mathsf{SA}}
+\newcommand{\GST}{\mathsf{GST}}
+\newcommand{\T}{\mathsf{T}}
+
+\newcommand{\Cand}{\mathsf{cand}}
+\newcommand{\DS}{\mathsf{DS}}
+
+\newcommand{\f}{\mathsf{freq}}
+\newcommand{\doc}{\mathsf{doc}}
+\newcommand{\score}{\mathsf{score}}
+\newcommand{\loc}{\mathsf{locus}}
+\newcommand{\List}{\mathsf{list}}
+\newcommand{\weight}{\mathsf{weight}}
+\newcommand{\lca}{\mathsf{lca}}
+\newcommand{\depth}{\mathsf{depth}}
+\newcommand{\topk}{\mathsf{top\mbox{-}}k}
+\newcommand{\logit}{\log^{(h)}}
+\def\output{\mathtt{output}}
+\def\rank{\mathit{rank}}
+\def\select{\mathit{select}}
+\newcommand{\search}{\mathsf{search}}
+\def\access{\mathit{access}}
+\def\tf{$\mbox{\sc tf}$}
+\def\tp{$\mbox{\sc tp}$}
+
+\newcommand{\chain}{\mathsf{next}}
+\renewcommand{\sp}{sp}
+\newcommand{\ep}{ep}
+\newcommand{\tsa}{\mathsf{t_{SA}}}
+\newcommand{\tin}{\mathsf{t_{\in}}}
+\newcommand{\tdocu}{\mathsf{t_{DA}}}
+\newcommand{\tprime}{\mathsf{t_{prime}}}
+\newcommand{\uup}{u^\uparrow}
+\newcommand{\udown}{u^\downarrow}
+\newcommand{\vup}{v^\uparrow}
+\newcommand{\vdown}{v^\downarrow}
+\newcommand{\md}{\mathsf{maxDepth}}
+
+\newcommand{\TFIDF}{\tt TF-IDF}
+\def\parent{\mathit{parent}}
+\def\child{\mathit{child}}
+\def\cra{\mathit{child\_rank}}
+\def\lca{\mathit{lca}}
+\def\parent{\mathit{parent}}
+\def\lml{\mathit{lmost\_leaf}}
+\def\rml{\mathit{rmost\_leaf}}
+\newcommand{\BE}{\mathsf{B_E}}
+\begin{document}
+
+%----------------------------------------------
+\pagenumbering{roman}
+%----------------------------------------------
+
+\thispagestyle{empty}
+	\begin{center}
+	\vspace*{0.5in}
+	%
+	%
+	%
+	\Large{GARBAGE COLLECTION FOR GENERAL GRAPHS}\\
+	%
+	%
+	%
+	\vspace{2in}
+	\normalsize{A Dissertation\\}
+	\vspace{\baselineskip}
+	\normalsize{Submitted to the Graduate Faculty of the\\}
+        \normalsize{Louisiana State University and\\}
+        \normalsize{Agricultural and Mechanical College\\}
+	\normalsize{in partial fulfillment of the\\}
+        \normalsize{requirements for the degree of\\}
+        \normalsize{Doctor of Philosophy\\}
+        \vspace{\baselineskip}        
+	\normalsize{in\\}
+        \vspace{\baselineskip}
+	\normalsize{The Department of Computer Science \\}
+	\vspace{.5in}
+	\normalsize{by\\}
+	\normalsize{Hari Krishnan\\}
+        \normalsize{B.Tech., Anna University, 2010\\}
+	\normalsize{August 2016\\}
+	\end{center}
+
+\pagebreak
+
+
+ \pagebreak
+ \begin{doublespace}
+% \input{tex/abstract}
+
+\renewcommand{\cftchapdotsep}{\cftdotsep}
+
+%Dedication and Acknowledgments
+
+ %\newpage
+% \chapter*{Acknowledgments}
+% \addcontentsline{toc}{chapter}{Acknowledgments}
+
+  \begin{doublespace}
+% \input{tex/acknowledge}
+  \end{doublespace}
+\newpage
+
+% \input{tex/dedication}
+ 
+ \newpage
+%Preface
+%\input{preface.tex}
+
+\renewcommand{\cftchapfont}{\normalfont}
+\renewcommand{\cftchappagefont}{\normalfont}
+
+\renewcommand{\cftsecpagefont}{\normalfont}
+% \renewcommand{\cftXpagefont}{\normalfont}
+\renewcommand{\contentsname}{Table of Contents}
+\setlength{\cftbeforetoctitleskip}{0 in}
+
+
+\begin{singlespace}
+\tableofcontents
+\end{singlespace}
+
+
+\newpage
+
+%\setlength{\cftbeforelottitleskip}{0 in}
+%\setlength{\cftbeforetabskip}{\baselineskip}
+\cleardoublepage
+%\phantomsection
+%\addcontentsline{toc}{chapter}{List of Tables}
+%\listoftables
+
+\newpage
+%\setlength{\cftbeforelottitleskip}{0 in}
+%\setlength{\cftbeforetabskip}{\baselineskip}
+% \cleardoublepage
+\phantomsection
+\begin{singlespace}
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoffigures
+\end{singlespace}
+
+
+ \pagebreak
+ 
+ \pagenumbering{arabic}
+ 
+
+ \begin{comment}
+ \chapter{Introduction}
+ \label{ch1:intro}
+\input{tex/introduction}
+
+ \chapter{Preliminaries}
+ \label{Preliminaries}
+ 
+ \input{tex/preliminaries}
+%
+
+ 
+  \chapter{Ranked Document Retrieval with Multiple Patterns}
+ \label{forbid}
+   \input{tex/forbid}
+
+ \chapter{Document Retrieval with Forbidden Extension}
+ \label{forbidext}
+ \input{tex/forbidext}
+
+  \chapter{Succinct Index for Document Retrieval with Forbidden Extension}
+ \label{forbidextsuccinct}
+ \input{tex/forbidextsuccinct}
+
+ \chapter{Document Retrieval Using Shared Constraint Range Reporting}
+ \label{scrr}
+ \input{tex/scrr}
+
+\chapter{Discriminating and Generic Words}
+\label{discrim}
+\input{tex/discriminating}
+
+\chapter{Pattern Matching with Position Restriction}
+\label{pos}
+\input{tex/prss}
+
+ \chapter{Uncertain String Indexing}
+ \label{uncertain}
+ \input{tex/uncertain}
+
+
+ \chapter{Conclusion}
+ \label{Conclusion}
+ \input{tex/Conclusions}
+\end{comment}
+
+  \end{doublespace}
+
+\newpage 
+
+
+
+
+%----------------------------------------------
+%\bibliographystyle{plainnat}
+
+\begin{singlespace}
+\addcontentsline{toc}{chapter}{References}
+\bibliographystyle{plain}
+%\bibliography{bib}
+\end{singlespace}
+
+%\appendix
+
+\newpage 
+  \begin{doublespace}
+ % \input{tex/vita}
+
+  \end{doublespace}
+\end{document}
