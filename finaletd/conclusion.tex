@@ -1,0 +1,24 @@
+\section{Conclusions}
+\label{section:conclusions}
+
+We have described a hybrid reference counting algorithm for garbage collection
+in distributed systems. The algorithm improves on the previous
+efforts by eliminating the need for centralization, 
+global barriers, back references for every edge, and object migration. Moreover, it achieves efficient time and
+space complexity. %; the previous algorithm provide no or inefficient
+%time and space guarantees.
+Furthermore, the algorithm is stable against
+concurrent mutations in the reference graph. %(i.e., the reference graph can
+%change during the algorithm's execution).
+The main idea was to develop a technique
+to identify the supporting set (nodes that prevent a given node from being
+dead) and handle the synchronization of multiple collection processes.
+We believe that our techniques
+might be of independent interest in solving other fundamental problems that
+arise in distributed computing. 
+
+In future work, we hope to address how to provide an order in which the dead
+nodes will be cleaned up, permitting some kind of ``destructor'' to be run, and
+to address fault tolerance. In addition, we hope to implement the proposed
+algorithm and compare its performance with previous algorithms using different
+benchmarks.

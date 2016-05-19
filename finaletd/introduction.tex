@@ -1,0 +1,270 @@
+\section{Introduction}
+
+Garbage-collected languages are widely used in distributed systems, including big-data applications in the cloud~\cite{maas2015trash,gog2015broom}.  Languages  in this space include
+Java, Scala, Python, C\#, PHP, etc., and platforms include Hadoop, Spark,
+Zookeeper, DryadLINQ, etc. In addition, cloud services such as Microsoft Azure and
+Google AppEngine, and companies such as Twitter and Facebook all make significant
+use of garbage-collected languages in their code
+infrastructure~\cite{maas2015trash}.  Garbage collection is seen as a
+significant benefit by the developers of these applications and platforms
+because it eliminates a large class of programming errors, which translates
+into higher developer productivity.
+%Unfortunately, this cost can become high
+%when object references are allowed to point outside of or between single
+%shared memory systems.
+
+Garbage collection is also an issue in networked object
+stores, which share many properties with distributed systems. Like
+such systems, they cannot use algorithms that require scanning the entire heap.
+In any situation in which traces can go across storage boundaries, i.e. from
+node to node, node to disk, etc., garbage collectors that need to trace the heap
+becomes impractical.  What is needed is something distributed, decentralized, scalable,
+that can run without ``stopping
+the world,'' and has good time and space complexity.
+
+%We note that time complexity may be of particular interest in increasing productivity.
+%Many garbage-collection system are not able to reliably inform the programmer when
+%objects are ready for reclamation. Most garbage collected languages make little effort
+%to call destructors, or finalizers, and so this important feature is often unusable.
+
+%In this present work we address all concerns except the last. We note, however,
+%that as machines have scaled up they have also become more reliable and failures
+%are not seen as frequently as many have feared.
+
+%Distributed systems access objects stored at remote sites. Programming
+%languages access objects allocated in the heap using stack variables and
+%global variable.  They are often referred as roots. In the distributed
+%systems, the heaps are distributed across sites and inter-site heap references
+%are allowed. Any object is considered live only when it is reachable from any
+%root.  So all objects that are not reachable will never be used and called
+%garbage.  Garbage collectors identify the objects that are garabge and reclaim
+%them.
+There are two main types of garbage collectors, namely Tracing and Reference
+Counting (RC). Tracing collectors track all the reachable objects from the root (in the reference graph)
+and delete all the unreachable objects.
+RC collectors
+count the number of objects pointing to a given block of data at any point in
+time.  When a reference count is decremented and becomes zero, its object is
+garbage, otherwise it {\em might} be
+garbage and some tracing is necessary (note that pure RC collectors do not trace and will not collect cycles ~\cite{rcfail}).  Unfortunately, cycles among distributed objects are
+frequent~\cite{richer}.
+%Our algorithm belongs to the family of hybrid RC collectors, which is RC with partial tracing. It advances the use of a
+%three reference count collector designed for a single machine~\cite{Brandt2014}
+%based on the Brownbridge~\cite{Brownbridge1985} algorithm. The advantage for such
+%systems is that they can frequently determine that a reference count decrement
+%does not create garbage without the need for tracing.
+Previous attempts at distributed garbage collection, e.g. \cite{Hudak:1982,Ladin,LeFessant,liskov97,liskov95,Veiga}, suffer from the need for centralization,
+%cooperation among all sites,
+global barriers,
+the migration of objects, or have inefficient time and space complexity guarantees.
+%Our algorithm can be used in a system where the migration of the objects are
+%not acceptable.
+%In the work that follows we first describe the operation of a serial version
+%of the collector, then proceed to discussion of the parallel version.
+
+
+
+%%Objects become unreachable. The reclaimation of these unreachable objects are
+%necessary for better performance. So distributed garbage collectors are
+%inevitable in distributed systems.
+%Although the distributed garbage collection is an active area of research, most
+%of the interesting algorithms published are not practical. They are either
+%centralized, require synchronization among all sites (a global barrier), or
+%require migration of all objects in one cycle to a common machine.
+%an accurate summary?}
+
+%To identify all the nodes that are dead in graph G, there are multiple
+%alternatives already available. The two abstract approach can be classified into
+%two ideas of same coin. The first idea is identifying all the live nodes and
+%then detecting the dead nodes. This approach is generally called as tracing
+%approach. Tracing approaches uses an attribute called mark which will be set if
+%there collectors reaches the node from root set R transitively. Then all the
+%nodes where mark is not set in the garbage detection process will be considered
+%garbage and deleted. This approach makes it clear that the node will not be able
+%to detect if it is a garbage. A centralized component is required to find all
+%the nodes that are live and then detect dead nodes. These systems are clearly
+%not scalable as they require synchronization among all collection processes. As
+%the model does not allow the nodes to know the $\inneighbors$ of a node,
+%traversing all the nodes backwards to detect if the node has a path from any
+%root is not considered. The model reflects the practical model used by real-time
+%systems, that back edges for all $\inneighbors$ creates a additional memory
+%overhead for each node. The additional memory overhead to save back edges can
+%bounded to O(V).
+
+%The second technique is identifying all the dead nodes by itself. This technique
+%is widely called reference counted system. The nodes count the number of the
+%incoming edges. This approach can detect a set of dead nodes trivially. When
+%there are no incoming edges to a node, it is clear that the node is dead. The
+%challenge in the reference counted system is node can be dead even if the node
+%$x$ has incoming edges. If all dead nodes has at least an incoming edge from
+%other dead node, garbage goes undetectad by simple reference counter. A simple
+%example would be a cycle created by dead nodes and no node in the cycle has a
+%path from root to it. Although simple reference counting suffers from complete
+%garbage collection, they gained popularity because of the promptness and
+%traversal cost to detect garbage. An garbage collection algorithm can be called
+%prompt if it can detect dead node immediately and avoid dead nodes floating
+%around. If reference counting technique can collect a cycle garbage and employ
+%decentralized decision using locality, these properties make it suitable for the
+%distributed system as they are easily scalable and prompt. A vast literature of
+%cycle collecting reference counting asynchronous shared memory garbage
+%collectors are available. All cycle collecting reference counted garabge
+%collectors are hybrid approach. In fair execution, to detect dead nodes, the
+%system employs a traversal that visits only a subset of nodes in graph. All
+%asynchronous shared memory cycle collecting reference counted garbage collectors
+%require some centralized data structure to detect dead nodes in dynamic graph
+%with multiple garbage detection process running simultaneously. A centralized
+%data structure based distributed algorithm will have bottlenecks and cannot be
+%self stabilizing. To avoid all the bottlenecks and make the distributed garbage
+%collection truely decentralized, our algorithm elminates use of centralized
+%approach among all garbage detection processes in the distributed system and a
+%node can make a decision about its liveness in finite steps once the node is
+%dead.
+
+\paragraph{Contributions:}
+We present a hybrid reference counting algorithm for garbage collection in
+distributed systems that works on the asynchronous model of communication with
+reliable FIFO channel. Our algorithm collects both
+non-cyclic and cyclic garbage in distributed systems of arbitrary topology by advancing on the
+three reference count collector which only works for a single machine~\cite{Brandt2014}
+based on the Brownbridge system~\cite{Brownbridge1985} \footnote{
+Note, the original algorithm of Brownbridge suffered from premature collection, and subsequent attempts to remedy this problem needed exponential time in certain scenarios \cite{Salkild1987,Pepels1988}. We addressed those limitations in \cite{Brandt2014}.
+}. The advantage for such
+systems is that they can frequently determine that a reference count decrement
+does not create garbage without the need for tracing. 
+%However, our technique in \cite{Brandt2014} does not extend directly to the distributed garbage collection scenario involving multiple sites.
+
+Our proposed algorithm is scalable
+because it collects garbage in $O(E)$ time using only $O(\log n)$ bits memory per
+node, where $E$ is the number of edges in the affected subgraph (of the reference
+graph) and $n$ is the number of nodes of the reference graph. Moreover, in
+contrast to previous work, our algorithm does not need centralization,
+global barriers, or the migration of objects. Apart from the benefits
+mentioned above, our algorithm handles concurrent mutation (addition and deletion of edges and nodes in the reference graph) and provides liveness
+and safety guarantees by maintaining a property called \emph{isolation}.
+Theorems \ref{pro:livenesss} and \ref{pro:safetys} prove that when a
+collection process works alone (i.e. in isolation), it is guaranteed to collect
+garbage and not to prematurely delete. Theorem \ref{thm:alliso} proves that
+when multiple collection processes interact, our synchronization mechanisms
+allow each of them to act as if they were working alone, and Theorems
+\ref{liveness} and \ref{safety} prove the correctness in this setting.
+To the best of our knowledge, this is the first algorithm for garbage
+collection in distributed systems that simultaneously achieves such guarantees.
+
+This algorithm falls into the category of self-stabilization algorithms, because
+it maintains the invariants (1) all nodes strongly connected, (2) no strong
+cycles, and (3) no floating garbage.
+
+\paragraph{Related Work:}
+%All existing garbage collectors designs fall into to one of these categories:
+%Tracing, Reference Count and Hybrid.
+Prior work on distributed garbage collection is vast; we discuss here the papers that are closely related to our work.  %Many of these collectors
+%suffer from the need for centralization, global barriers,
+%the migration of objects, or have inefficient time and space complexity.
+The marking algorithm proposed by Hudak~\cite{Hudak:1982} requires a global barrier.
+All local garbage
+collectors coordinate to start the marking phase. Once the marking phase is over
+in all the sites, then the sweeping phase continues. Along with the marking and sweeping overhead,
+there are consistency issues in tracing based collectors~\cite{shapiro95}.
+
+Ladin and Liskov~\cite{Ladin} compute reachability of objects in a highly
+available centralized service. This algorithm is logically centralized but
+physically replicated, hence achieving high availability and fault-tolerance.
+All objects and tables are backed up in stable storage. Clocks are synchronized
+and message delivery delay is bounded. These assumptions enable the centralized
+service to build a consistent view of the distributed system. The centralized
+service registers all the inter-space references and detects garbage using a standard
+tracing algorithm. This algorithm has scalability issues due to the centralized
+service. A heuristic-based algorithm by Le Fessant ~\cite{LeFessant} uses the minimal number
+of inter-node references from a root to identify ``garbage suspects'' and then
+verifies the suspects. The algorithm propagates marks from the references to all the
+reachable objects. A cycle is detected when a remote object receives only its
+own mark. The algorithm needs tight coupling between local
+collectors and time complexity for the collection of cycles is not analyzed.
+
+Collecting distributed garbage cycles by backtracking is proposed by Maheshwari
+and Liskov~\cite{liskov97}. This algorithm first hypothesizes that objects are dead and
+then tries to backtrack and prove whether that is true. The algorithm
+needs to use an additional datastructure to store all inter-site references.
+An alternative approach of distributed garbage collection by
+migrating objects have been proposed by Maheshwari and Liskov~\cite{liskov95}. Both
+of the algorithms use heuristics to detect garbage. The former one uses more
+memory, the latter one increases the overhead by moving the objects between the
+sites. Recently, Veiga et al.~\cite{Veiga} proposed an algorithm that uses
+asynchronous local snapshots to identify global garbage. Cycle detection
+messages (CDM) traverse the reference graph and gain information about the
+graph. A drawback of this approach is that the algorithm doesn't work with the $\mathcal{CONGEST}$ model. %the growth of the messages is limited
+%only by the size of the distributed system.
+Any change to the snapshots
+has to be updated by local mutators, forcing current global garbage collection
+to quit. For a thorough understanding of the literature, we recommend reading~\cite{shapiro95, Abu}.
+
+
+%\subsection{Distributed Garabge Collection = GC + Distributed Termination
+%Detection}
+%necessary in decentralized algorithm}
+
+%Distributed termination detection(DTD) is a fundamental to distributed
+%computation. The solution can be applied to any computation that tries to
+%evaluate some stable property.
+%Examples of such properties are
+%deadlock detection, garbage detection etc. Once a system eventually enters into
+%deadlock, it remains deadlocked. Once an object becomes garbage, it remains so.
+%Detecting whether the stable property is reached is equivalent to termination in
+%the DTD. The DTD can be formally described as a collection of processes
+%communicating by messages. A process can be either passive or active. Active
+%processes may send message while passive process will not send message. A passive
+%process will be become an active when a message is received. When all the
+%distributed processes are passive, the stable property is achieved. Stability
+%here means no messages are in flight. The popular termination detection algorithms
+%are ~\cite{dijk83,Tel88,dijk80,Misra82,Chandra90,nir}. Dijkstra and Scholten
+%~\cite{dijk80} create spanning trees of the graph for detecting the termination
+%detection. Our algorithm uses their solution to control the traversal and detect
+%the termination.
+
+%Tel et al showed that Distributed Termiantion Detection Algorithm (DTDA) can be
+%derived from Garbage Collection Schemes.~\cite{Tel:1993}. Following Tel et al,
+%Blackburn et al describes that reversing mapping is also
+%possible~\cite{Blackburn:2001}. They also explained
+%that any known DTDA with a centralized garbage collection will produce a
+%distrbuted garbage collector (DGC). Although the literature clearly
+%demonstrates the relationship between the fundamental problems of DTDA and DGC, cyclic
+%reference counting-based DGC algorithm that contains this relation have never
+%been explored. To our knowledge this is the first article that to do so.
+
+%Most modern programming languages use heap and stack memory to run application.
+%Objects are allocated in heap memory to increase the lifetime of the object.
+%Managed runtime systems help developers to ignore the efficient deallocation of
+%the objects. These managed runtime systems identify the heap allocated objects
+%that are garbage and deallocate them. The relationship among various allocated
+%objects in memory can be modeled as directed graph. Pointers that are in stack
+%can hold reference to object in the heap. These pointers are generally referred
+%as roots. Also, global pointers can also be considered as roots. In abstract,
+%any pointer that does not reside in heap memory but holds reference to heap
+%objects are called roots. Any objects in the heap are called nodes. These nodes
+%are synonymous to regular graph nodes in graph theory. Any node can hold
+%reference to any other node. These references are unidirectional link incident
+%on two nodes. So they form a directed graph. The distinction between roots and
+%nodes are any root can hold reference to nodes but nodes can only reference to
+%other nodes. To map this into graph, we have two kind of vertices. Roots are
+%special vertices that does not have any incoming link but an outgoing link.
+%Nodes are regular vertex that can have incoming and outgoing links. A node is
+%considered reachable if the node has a path from one of the root node to it.
+%Unreachable nodes are called garbage and needs to be deleted for efficiency. The
+%problem of garbage collection can be described as problem of finding all the
+%garbage nodes in the reference graph and reclaim/delete them.
+
+%It is shown in ~\cite{Tel:1993,Blackburn:2001} that there is
+%strong relation between DTD and distributed garabge collection. Tel et al shown
+%that a distributed termination detection algorithm can be derived from any
+%distributed garabge collector~\cite{Tel:1993}. Blackburn et al, described that a
+%distributed garbage collector is composite of distributed termination detection
+%and a garbage collector ~\cite{Blackburn:2001}. Our algorithm indeed has a
+%distributed termination detection algorithm in it along with a garbage
+%collection algorithm.
+
+%\subsection{Contributions}
+
+\paragraph{Paper Outline:}
+%The rest of the paper is organized as follows.
+Section \ref{model} describes the garbage collection problem, constraints involved in the problem, and the model for which the algorithm is presented. Section \ref{single} explains the single collector version of the algorithm and provides correctness, time, and space guarantees.
+Section \ref{multi} extends the results of Section \ref{single} to the multiple collector scenario. Finally, Section \ref{section:conclusions} concludes the paper with a short discussion. Some of the proofs and the pseudocode for the algorithms may be found in Appendix \ref{section:appendix}.

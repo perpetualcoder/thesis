@@ -1,0 +1,23 @@
+
+\begin{abstract}
+
+We propose a scalable, cycle-collecting, decentralized, reference counting
+garbage collector with partial tracing.  The algorithm is based on the
+Brownbridge system but uses four different types of references to label edges
+in the reference graph. Memory usage is $O(\log n)$ bits per node, where $n$ is the
+number of nodes in the graph.  The algorithm assumes an asynchronous network
+model with a reliable FIFO channel. It collects garbage in
+$O(E)$ time, where $E$ is the number of edges in the induced subgraph of the reference graph. The
+algorithm uses termination detection to manage the
+distributed computation, a unique identifier to break the symmetry among
+multiple collectors, and a transaction-based approach 
+when multiple collectors conflict. Unlike existing
+algorithms, ours is not centralized, does not require barriers,
+does not require
+migration of nodes, does not require back-pointers on every edge,
+and is stable against concurrent mutation. %, even with multiple collection
+%operations overlapping the induced subgraph.
+
+%\keywords{Distributed Garbage Collection, Distributed Termination Detection,
+%Strong Weak Phantom, Reference Count}
+\end{abstract} 

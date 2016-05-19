@@ -1,0 +1,320 @@
+
+\section{Model and Preliminaries}
+\label{model}
+\paragraph{Distributed System:}
+We consider a distributed system of nodes
+%A distributed algorithm is one where
+%self-stabilization problem where nodes
+%the dead nodes identify that they are dead and
+%delete themselves. Identifying a dead node by itself is not trivial in most
+%cases. Each node can be assumed to
+where each node operates independently and communicates with other nodes through
+message passing. The underlying topology of the system is assumed to be arbitrary but connected. Each node has a queue to receive messages, and in response to a message a node can only read and write its own state and send additional messages. %A node can only send a
+%message to its out-neighbors and parent of the node. Parent, a chosen node in
+%$\Gamma_{in}$ from communication happened by our algorithm, .
+We further assume that the nodes can communicate over
+a reliable FIFO channel and that messages
+are never lost, duplicated, or delivered out of order.
+These properties make our system compatible with the $\mathcal{CONGEST}$ asynchronous network model with no failures ~\cite{congest}.
+%Each site has memory where the objects reside. \todo{need precise definition}
+
+\paragraph{Basic Reference Graph:}
+We model the relationship among various objects and pointers in memory through a directed graph $G = (V, E)$, which we call a {\it reference graph}.
+The graph $G$ has a special node $R$, which we call the {\it root}. Node $R$
+represents
+global and stack pointer variables, and
+thus does not have any incoming edges.
+Each node in $G$ is assumed to contain a unique ID. % to distinguish it within
+%$G$. (For example, when each node of $G$ maps to a unique site in $H$, then ID of the site in $H$ can be used for the ID of the node in $G$.)
+All adjacent nodes to a given node in $G$ are called $neighbors$, and denoted by $\Gamma$. The
+$\inneighbors$ of a node $x\in G$ can be defined as the set of nodes whose outgoing edges
+are incident on $x$, represented by $\Gamma_{in}(x)$. The $\outneighbors$ of $x$ can be defined as the set
+of nodes whose incoming edges originate on $x$, represented by $\Gamma_{out}(x)$.
+Note that each node $x\in G$ does not know $\Gamma_{in}(x)$ at any point in time.
+%This constraint
+%reduces memory complexity, thereby making
+%the algorithm more practical and scalable. \todo{remove preceding sentence?}
+
+\paragraph{Distributed Garbage Collection Problem:}
+All nodes in $G$ can be classified as either {\em live} (i.e., not garbage) or {\em dead} (i.e., garbage) based on a property called
+$reachability$. Live and dead nodes can be defined as below:
+
+
+%$Live(x)= \exists y \in V \mid Reachable(y, x)$
+
+%$Reachable(y, x) = x \in R \vee (Live(y) \wedge x \in \Gamma_{out}(y))$
+
+$Reachable(y,x) = x \in \Gamma_{\rm out}(y) \lor (x \in \Gamma_{\rm out}(z) \mid Reachable(y,z))$
+
+$Live(x) = Reachable(R,x)$
+
+$Dead(x) = \neg Live(x)$
+
+%From above definition, it is clearly that all root nodes are always reachable / live.
+We allow the live portion
+of $G$, denoted as $G'$, to be mutated while the algorithm is running, and we refer
+to the source of these mutations as the {\em Adversary.}
+The Adversary can create nodes and attach them to $G'$, create new edges between existing nodes of $G'$, or delete edges from $G'$. Moreover, the Adversary can perform multiple events (creation and deletion of edges)
+simultaneously. The Adversary, however, can never mutate the dead portion of the graph $G'' = G\backslash G'$.
+%Creation event represents creating directed
+%edges. An edge can be only created between two live nodes in $G$. To create a
+%node, an edge is created between a live node and non-existing node. During link
+%creation, if the node is not available, the requested node is created and a
+%directed edge is incident on newly created node. So the newly
+%created node is always reachable. Deletion happens only for edges. Adversary can
+%delete outgoing edge of a node $x$ only if $x$ is live . So $A$ cannot perform
+%any mutation on dead nodes. These constraints create the following principles /
+%axioms in the model.
+
+\begin{axiom}[Immutable Dead Node]
+ The Adversary cannot mutate a dead node.
+ \label{ax:immut}
+\end{axiom}
+
+\begin{axiom}[Node Creation]
+ All nodes are live when they are created by the Adversary.
+\end{axiom}
+
+From Axiom \ref{ax:immut}, it follows that a node that becomes dead will never
+become live again.
+%This property allows the problem to be solved in
+%finite time. \todo{remove preceding sentence}
+%The problem of distributed garbage collection can be modeled as
+%detecting all dead nodes in dynamic directed graph $G$.
+
+Each node experiencing deletion of an incoming edge has to determine whether it is still
+live. If a node detects that it is dead then it must delete itself from the
+graph $G$. %The problem of garbage collection is the process of
+%identifying dead nodes in $G$ and deleting them.
+
+\begin{definition}[Distributed Garbage Collection Problem]
+%The problem of garbage collection is the process of
+Identify the dead nodes in the reference graph $G$ and delete them.
+\end{definition}
+
+%We consider a distributed system where
+%%A distributed algorithm is one where
+%%self-stabilization problem where nodes
+%%the dead nodes identify that they are dead and
+%%delete themselves. Identifying a dead node by itself is not trivial in most
+%%cases. Each node can be assumed to
+%each node communicates with other nodes through
+%messages. Each node has a queue to receive messages, and in response to a message a node can only read and write its own state and send additional messages. %A node can only send a
+%%message to its out-neighbors and parent of the node. Parent, a chosen node in
+%%$\Gamma_{in}$ from communication happened by our algorithm, .
+%We further assume that the algorithm communicates over
+%a reliable FIFO channel and that messages
+%are never lost, duplicated, or delivered out of order.
+%These properties make this algorithm compatible with the $\mathcal{CONGEST}$~\cite{congest} asynchronous network model with no failures.  \todo{talk also about fair execution here which is currently missing}
+%%The $\mathcal{CONGEST}$ model adds the additional requirement that %messages are limited in size to $O (\log N)$. This limit is %already reached if unique object ID's are present in a message, as %they are of size $O (\log N)$.
+
+%\subsection{Preliminaries}
+
+\begin{figure}
+\centering
+%\begin{center}
+\scalebox{0.6}[0.6]{\input{completeabstract}}
+\caption{We depict all the ways in which an initiator node, $A$, can
+be connected to the graph. Circles 
+represent sets of nodes.
+Dotted lines represent one or more non-strong paths. Solid lines represent one or more
+strong paths.
+A T-shaped end-point indicates the root, R.
+If C${}^\prime$, D${}^\prime$, E${}^\prime$ and F are empty sets, A is garbage, otherwise 
+it is not. }
+\label{fig:completeabstract}
+%\end{center}
+\end{figure}
+
+\begin{comment}
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[t]{0.45\linewidth}
+%\begin{center}
+\scalebox{0.6}[0.6]{\input{completeabstract}}
+\caption{We depict all the ways in which an initiator node, $A$, can
+be connected to the graph. Circles 
+represent sets of nodes.
+Dotted lines represent one or more non-strong paths. Solid lines represent one or more
+strong paths.
+A T-shaped end-point indicates the root, R.
+If C', D', E' and F are empty sets, A is garbage, otherwise 
+it is not. }
+\label{fig:completeabstract}
+%\end{center}
+\end{subfigure}
+%\hfill
+\begin{subfigure}[t]{0.45\linewidth}
+%\begin{center}
+\scalebox{0.6}[0.6]{\input{figs/state2}}
+\caption{The above figure depicts the state/phase transitions performed by initiator in the algorithm.
+}
+\label{fig:state}
+%\end{center}
+
+\end{subfigure}
+\caption{}
+\end{figure}
+\end{comment}
+\begin{comment}
+
+\begin{figure}
+\begin{center}
+\scalebox{0.6}[0.6]{\input{completeabstract}}
+\caption{An illustration of all the ways in which an initiator node, $A$, can
+be connected to the graph before a collection process begins. The circles in the
+graph represent sets of nodes.
+Dotted lines represent one or more non-strong paths, and solid lines represent one or more
+strong paths (but non-strong paths may exist alongside them).
+A T-shaped end-point indicates the root, $R$.
+Other nodes and connections between nodes may exist,
+but here we map only paths and nodes related to $A$ and $R$.
+Thus, if $C'$, $D'$, $E'$ and $F$ are empty sets, $A$ is garbage, otherwise
+it is not.}
+\label{fig:completeabstract}
+\end{center}
+\vspace{-9mm}
+\end{figure}
+\end{comment}
+%\paragraph{Modified Reference Graph $G$ using the Brownbridge Method:}
+\paragraph{Classification of Edges in $G$:}
+%Instead of using the reference graph $G$ defined above, we use the Brownbridge method \cite{Brownbridge1985} of classifying edges of $G$.
+We classify the edges in $G$ as $weak$ or $strong$ according to the Brownbridge method~\cite{Brownbridge1985}.
+This classification does not need preprocessing of $G$ and can be done directly at the time of creation of $G$.
+%In the Brownbridge method, edges of $G$ are labeled as either $strong$ or $weak$. %Each node has two reference counts, one for each
+%incoming edge type.
+%The reason for the two types of edges are due to
+%inability to detect cyclic structure by single edge type.
+%Brownbridge idea is
+%to avoid cycle of strong edges in the graph.
+Chains of strong edges connect the root $R$ to all the nodes $G$ and contain
+no cycles. The weak edges
+are required for all cycle-creating edges in $G$. The advantage to the Brownbridge
+method is that it permits less frequent
+tracing of the outgoing edges. Without a distinction between strong and weak edges,
+tracing is required after every deletion that does not bring the reference count to zero.
+In the Brownbridge method, if a strong edge remains after the deletion of any edge,
+the node is live and no tracing
+is necessary.
+%Our algorithm takes graph $G$ as this modified reference graph.
+Fig.~\ref{fig:completeabstract} illustrates an example reference graph $G$ with strong (solid) and weak (dotted) edges.
+
+\paragraph{Weight-based Edge Classification for the Reference Graph $G$:} We assign {\em weights} to the nodes as a means of classifying the edges in $G$.
+Each node of $G$ maintains two attributes %related to the weight component of the algorithm.
+$weight$ and $\maxweight$, as well as counts of strong and weak incoming edges. %The weight is an integer in each node that helps to
+%label the edges in the graph.
+The weight of the root, $R$, is zero at all times. For
+an edge to
+be strong, the weight of the source must be less than the weight of the
+target.
+The
+$\maxweight$ of a node is defined as the maximum weight of the node's
+$\inneighbors$. Messages sent by nodes contain
+the $weight$ of the sender so that the $\outneighbors$ can keep track of their
+strong count, weak count, and $\maxweight.$
+When a
+node is created, its initial weight is given by adding one to the weight of the
+first node to reference it.
+%edge to the node is a strong edge. An edge is considered strong only when the
+%weight of the source node is less than weight of the target node. So a strong
+%edge $e$ from $x$ to $y$ means $x.weight$ $<$ $y.weight$. Node creation followed by
+%edge created to that node updates the $\maxweight$ of the node. If the node is
+%just created, the weight is updated to the first increment of max weight. This
+%satisfies the requirements to make the edge into strong edge.
+
+%The advantage of
+%weight based labeling is, along with atomic edge labeling, our algorithm
+%requires
+%the edge label to be changed
+%without the source of the edge interacting with the conversion process. In this
+%approach, a
+%target node of an edge can change the label from strong to weak or vice-versa by
+%adjusting
+%its weight. When a node creates an edge, the source of the edge does not
+%wait for the target to notify the label of the edge because the label of the
+%edge is based on
+%the weight of the source which is already sent in the message to create that
+%edge.
+%--% \begin{figure}
+%--% \begin{center}
+%--% \scalebox{0.6}[0.6]{\input{figs/fig2}}
+%--% \caption{Examples of labeling edges when the edge is created}
+%--% \label{fig:brownbridge}
+%--% \end{center}
+%--% \end{figure}
+
+%\begin{figure}[h]
+%\caption{Example of labeling edges when the edge is created using brownbridge
+%technique}
+%\centering
+%\includegraphics[width=\textwidth]{figs/strongweak}
+%\label{fig:brownbridge}
+%\end{figure}
+
+%Note that having a weak incoming edge does not necessarily mean the
+%node is part of cycle.
+% as depicted in the \ref{fig:brownbridge}.
+%In figure \ref{fig:brownbridge}, there are two examples shown explaining
+%our technique to name edges. %$N_i$ can be considered to be created
+%before $N_{i-1}$.
+%In the image on the left, a weak edge is labeled to mark
+%the cycle closing edge. On the right side, however, an edge is marked weak although
+%node $N_4$, which is not part of any cycle.
+
+
+%\todo{remove?}
+\begin{lemma}[Strong Cycle Invariant]
+No cycle of strong edges will be formed by weight-based edge classification.
+\end{lemma}
+
+\begin{proof}
+By construction, for any node $y$ which is reachable from a node $x$ by
+strong edges, $y$ must have
+a larger weight than $x$. Therefore, if $x$ is reachable from itself through a cycle,
+and if that cycle is strong, $x$ must have a greater
+weight than itself, which is impossible.
+%To create a cycle of strong edges, the weight of source of cycle closing edge
+%must be lesser than the weight of the target node. Let's assume the source of
+%cycle closing edge for the graph is $z$ and target of the cycle closing edge
+%is $a$. As we mentioned above, the cycle closing edge can be strong only if
+%the $z.weigh$ $<$ $a.weight$. For this to be a cycle closing edge, there must
+%be at least an edge from $a$ to series of nodes ultimately reaching $z$ or
+%$a$ contains a edge to $z$ directly. In the later case, it is clear that the
+%edge from $a$ to $z$ will be weak since the weights are not satisfying the
+%condition to label them as strong. In the former case, for all the edges
+%between $a$ to $z$ to be strong, all the weight of nodes in the path from
+%$a$ to $z$ must be in ascending order. This contradicts our assumption that
+%$a.weight$ $>$ $z.weight$. So a cycle of strong edges cannot be formed in weightbased edge labeling.
+\end{proof}
+
+\paragraph{Terminology:}
+A $path$ is an ordered set of edges such that the destination
+of each edge is the origin of the next.
+A path is called a $strong$ path if it consists
+exclusively of strong edges, otherwise it is called
+$\nonstrong$ path. We say two nodes are $related$ if
+a path exists between them.
+A node, $x$, is a member of the $dependent$ $set$ of A if all strong paths leading to $x$ originate on $A$
+(i.e. $B$, $B'$, $C$, and $C'$ in Fig.~\ref{fig:completeabstract}).
+
+Consider a node, A, that has just lost its last strong edge. We model this situation
+with an induced subgraph with $A$ removed (i.e. $G-A$), then the $purely$ $dependent$ $set$ of A
+consists of the nodes that have no path from $R$
+(i.e. $B$, and $B'$  in Fig.~\ref{fig:completeabstract}).
+A node, $y$, is a member of the $supporting$ $set$ of A if
+there is a path from $R$ to $y$, and from $y$ to $A$ (i.e.
+$C'$, $D'$, $E'$, and $F$ in Fig.~\ref{fig:completeabstract} ).
+A node, $z$, is a member of the $independent$ $set$ of A if $z$ is related to $A$ and
+there is at least one strong path from $R$ to $z$
+(i.e.
+$D$, $D'$, $E$, $E'$, and $F$ in Fig.~\ref{fig:completeabstract}).
+A node, $x$, is a member of the $build$ $set$ of A if it is both a member of the supporting set and
+the independent set.
+Alternatively, A node, $x$ is said to be in the $build$ $set$ if a strong path from $R$ to $x$ exists,
+but also a path from $x$ to $A$ exists (i.e. $D'$, $E'$ and $F$ in Fig.~\ref{fig:completeabstract}).
+A node, $x$, is a member of the $recovery$ $set$ of A if it is both a member of the supporting set
+and the dependent set
+(i.e. $C'$ in Fig.~\ref{fig:completeabstract}).
+A node, $x$, is said to be in the $\mathit{affected\ set}$ if there exists a path, $p$, from $A$ to $x$, such that no
+node found along $p$ (other than $x$ itself) has a strong path from $R$ (i.e.
+everything except $F$ in Fig.~\ref{fig:completeabstract}).

@@ -1,0 +1,168 @@
+\begin{comment}
+\documentclass[11pt]{article}
+\usepackage[text={6.6in,9.3in},centering]{geometry}
+\usepackage{times}
+\usepackage{amsthm}
+%\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{amssymb, amsmath}
+\usepackage{color}
+\usepackage{graphicx}
+%\usepackage{subfig}
+\usepackage{lipsum}
+\usepackage{wrapfig}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{amsmath}
+\usepackage{multicol}
+\usepackage{algpseudocode}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{cleveref}
+%\usepackage{algcompatible}
+
+ \usepackage{pstricks}
+% The following commands are not supported in PSTricks at present
+% We define them conditionally, so when they are implemented,
+% this pstricks file will use them.
+\ifx\setlinejoinmode\undefined
+  \newcommand{\setlinejoinmode}[1]{}
+\fi
+\ifx\setlinecaps\undefined
+  \newcommand{\setlinecaps}[1]{}
+\fi
+% This way define your own fonts mapping (for example with ifthen)
+\ifx\setfont\undefined
+  \newcommand{\setfont}[2]{}
+\fi
+
+\algtext*{EndIf}% Remove "end if" text
+
+%\newtheorem{theorem}{Theorem}[section]
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemmas}{Lemma}
+\newtheorem{axioms}{Axiom}
+\newtheorem{lemma}[lemmas]{Lemma}
+\newtheorem{axiom}[axioms]{Axiom}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{observation}[lemmas]{Corollary}
+\newtheorem{invariant}{Invariant}
+
+\newtheorem*{rep@theorem}{\rep@title}
+\newcommand{\newreptheorem}[2]{%
+\newenvironment{rep#1}[1]{%
+ \def\rep@title{#2 \ref{##1}}%
+ \begin{rep@theorem}}%
+ {\end{rep@theorem}}}
+
+
+\newreptheorem{theorem}{Theorem}
+%\newtheorem{lemma}{Lemma}
+\newreptheorem{lemma}{Lemma}
+
+
+
+\newcommand{\sq}{\hbox{\rlap{$\sqcap$}$\sqcup$}}
+%\newcommand{\qed}{\hspace*{\fill}\sq}
+%\newenvironment{proof}{\noindent {\bf Proof.}\ }{\qed\par\vskip %4mm\par}
+\newenvironment{proofs}{\noindent {\bf Proof (sketch).}\ }{\qed\par\vskip
+0mm\par}
+
+\newcommand{\todo}[1]{\textcolor{red}{\textsf{[#1]}}}
+\newcommand{\srb}[1]{\textcolor{blue}{\textsf{Steve: [#1]}}}
+\newcommand{{\rh}}{{\widehat r}}
+\newcommand{{\Rh}}{{\widehat R}}
+\newcommand{\E}{{\mathcal E}}
+\newcommand{\T}{{\mathcal T}}
+\newcommand{\ww}{{\mathfrak{w}}}
+\newcommand{\diam}{{\rm diam}}
+\newcommand{\dist}{{\rm dist}}
+\newcommand{\length}{{\rm length}}
+\newcommand{\publish}{{\sl publish}}
+\newcommand{\move}{{\sl move}}
+\newcommand{\lookup}{{\sl lookup}}
+\newcommand{\Read}{{\rm Read}}
+\newcommand{\Write}{{\rm Write}}
+\newcommand{\mysf}[1]{\textup{\sffamily #1}}
+\newcommand{\CONGEST}{\mysf{CONGEST}}
+
+\newcommand{\note}[1]{[[[{\bf #1}]]]}
+
+\newcommand\outneighbors{\mathop{\mbox{$out$-$\mathit{neighbors}$}}}
+\newcommand\inneighbors{\mathop{\mbox{$in$-$\mathit{neighbors}$}}}
+\newcommand\maxweight{\mathop{\mbox{$max$-$\mathit{weight}$}}}
+\newcommand\nonstrong{\mathop{\mbox{$non$-$\mathit{strong}$}}}
+
+
+\begin{document}
+\sloppy
+\begin{titlepage}
+
+\title{Distributed Garbage Collection for General Graphs}
+
+\author{
+Hari Krishnan\thanks{Corresponding author.} \thanks{Center for Computation and Technology, and Computer
+Science and Engineering Division, Louisiana State University, LA 70803.}\\
+{\em  Louisiana State University}\\
+\url{hkrish4@tigers.lsu.edu}
+\and
+Steven R Brandt\thanks{Center for Computation and Technology, and Computer
+Science and Engineering Division, Louisiana State University, LA 70803.} \\
+{\em  Louisiana State University}\\
+\url{sbrandt@cct.lsu.edu}
+\and
+Costas Busch\thanks{Computer Science and Engineering Division, Louisiana State
+University, LA 70803.}\\
+{\em Louisiana State University}\\
+\url{busch@csc.lsu.edu}
+\and
+Gokarna Sharma\thanks{Department of Computer Science, Kent
+State University, OH 44242}\\
+{\em Kent State University}\\
+\url{sharma@cs.kent.edu}
+}
+
+\date{}
+\maketitle
+
+\input{abstract}
+\centerline{}
+\centerline{}
+\centerline{{\bf Regular Paper. Consider also for Brief Announcement.}}
+\centerline{{\bf Eligible for best student paper award: Hari Krishnan is a full
+time student.}}
+
+\thispagestyle{empty}
+
+
+\end{titlepage}
+\end{comment}
+
+\input{introduction}
+
+\input{model}
+
+\input{singlecollector}
+%\input{figs/Diagram1}
+\input{multicollector}
+
+\input{conclusion}
+
+\begin{comment}
+\bibliographystyle{plain}
+\bibliography{dgcbib}
+\end{comment}
+\appendix
+\input{appendix}
+
+
+\begin{comment}
+\end{document}
+\end{comment}

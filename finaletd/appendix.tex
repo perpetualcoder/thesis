@@ -1,0 +1,776 @@
+\section{Appendices}
+\label{section:appendix}
+\subsection{Terminology}
+\begin{description}
+%\item[which(bit)] Each object has two reference counts in the header. which
+%gives the index of the strong reference count.
+\item[SC] Strong Reference Coung
+% refers to strong count and WC refers to Weak count.
+% refers to Reference count. Each object has strong and
+%weak reference count.
+\item[WC] Weak Reference Count
+
+\item[PC] Phantom Reference Count 
+%refers to Phantom reference count. This count is used by
+%collector during collection.
+
+%\item[PhantomNodeFlag] True when the node sent phantom %messages to all $\Gamma_{out}$.
+
+ \item[RCC] Recovery Count
+\item[CID] Collector Identifier 
+%is a tuple of two 
+%entities. $<$ Unique Id (Uid), Version Id(Vid) $>$ . \\
+%   $CID_1 = CID_2 $ if $CID_1.Uid = CID_2.Uid \& CID_1.Vid = CID_2.Vid$\\
+%   $CID_1 < CID_2$ if $CID_1.Uid < CID_2.Uid $ or $ 
+%   CID_1.Uid = CID_2.Uid \& CID_1.Vid < CID_2.Vid  $\\
+
+%\item[W] Return Message Waiting Count. 
+%Algorithm uses termination detection algorithm technique
+%to keep track of different phases of algorithm. Waiting %represents how many
+%messages an node expects from out-neighbors.
+\item[SRO] Start Recovery Over. 
+
+%Tells the initiator if the recovery process
+%need to start over with updated CID if set true.
+
+\item[Parent] Parent Pointer.
+% is used by termination detection algorithm to
+%co-ordinate process/phase completion.
+
+\item[$<$MSG TYPE,  Receiver, CID, SRO$>$] Sends a message of mentioned type to receiver.
+Message types will one of the following: 
+Phantomize(PH), Recovery(RC), Build(B), Return(R), Delete(D), Plague Delete(PD). All parameters are not necessary for some messages.
+
+\item[State] State can be one of the following: Phantomizing, Phantomized, Recovering, Recovered, Building, Healthy. 
+\end{description}
+\begin{description}
+\item[Healthy] SC $>$ 0 \& PC $=$ 0 \& RCC $=$ 0 \& PhantomNodeFlag $=$ false 
+\& CID $=$ $\bot$ \& All return msgs received
+\item[Weakly Supported] WC $>$ 0 \& SC $=$ 0 \& PC $=$ 0 \& RCC
+$=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0 
+\item[Maybe Delete] PC $=$ RCC \& SC $=$ WC $=$ 0 \& waiting $=$ 0 \& CID $\neq$ $\bot$ \& PC $>$ 0
+\item [Simply Dead] PC $=$ RCC \& SC $=$ WC $=$ 0 \& waiting $=$ 0 \& PC $=$ 0
+  	\item [Garbage] Simply Dead or  ( Maybe Delete \& Initiator)
+\end{description}
+
+\subsection{Single Collector Algorithm}
+\label{singlealgo}
+\begin{algorithm}[H]
+%\algsetup{linenosize=\tiny}
+\scriptsize
+\caption{Single Collector Algorithm}
+\label{Node Automaton}
+%\begin{multicols}{2}
+\begin{algorithmic}[1]
+\Procedure{OnMsgReceive}{}
+\If{msg type = PH}
+	\State Decrement SC/WC and Increment PC
+	\If {state = Phantomizing}
+		\State $<$R, msg.sender $>$
+	\Else
+		\State Parent = msg.sender
+		\If {SC = 0}
+			\State Toggle SC and WC
+			\State $<$PH, $\Gamma_{out}$ $>$ 
+			\State state = Phantomizing \& PhantomNodeFlag = true
+		\EndIf
+		\If {No Out-neighbors or SC $>$ 0}
+				\State $<$R, Parent$>$
+		\EndIf
+	\EndIf
+\ElsIf{msg type = RC}
+	\If {state = Phantomized}
+		\State Parent = msg.sender.
+		\If { SC $>$ 0}
+			\State state = Building
+			\State $<$ B,  $\Gamma_{out}$ $>$ 
+		\Else
+			\State state = Recovering
+			\State $<$RC, $\Gamma_{out}$ $>$ 
+		\EndIf
+		\If {No Out-neighbors}
+			\State $<$R,  msg.sender$>$
+		\EndIf
+	\Else
+		\State $<$ R, msg.sender $>$
+	\EndIf
+\ElsIf {msg type = B}
+	\State Increment SC/WC and decrement PC.
+	\If {state = Phantomized or Recovered}
+		\State state = Building \& Parent = msg.sender
+		\State  $<$B,  $\Gamma_{out}$ $>$ 
+	\Else
+		\State  $<$R,  msg.sender$>$
+	\EndIf
+\ElsIf {msg type = PD}
+	\State Decrement PC.
+	\If {SC= 0 \& WC = 0 \& PC = 0}
+	  \State $<$PD , $\Gamma_{out}$ $>$ 
+    $\Gamma_{out} = \bot$
+  \EndIf
+	\If {SC= 0 \& WC = 0 \& PC = 0}
+		\State Delete the Node
+	\EndIf
+\ElsIf {msg type = D}
+	\State Decrement SC/WC.
+	\If { SC = 0 \& WC $>$ 0}
+		\State Toggle WC and SC.
+		\State state = Phantomizing.
+		\State $<$PH , $\Gamma_{out}$ $>$
+	\ElsIf { SC=0 \& WC = 0}
+		\State $<$D , $\Gamma_{out}$ $>$	
+		\State Delete the node.
+	\EndIf
+\ElsIf {msg type = R \& All return msgs received} 
+	\If{state = Phantomizing}
+		\State state = Phantomized
+		\If {Not Initiator}
+			\State $<$R , Parent $>$
+		\Else
+			\If {SC $>$ 0 }
+				\State state = Building
+				\State $<$B , $\Gamma_{out}$ $>$
+			\Else
+				\State state = Recovering
+				\State $<$RC , $\Gamma_{out}$ $>$
+			\EndIf
+		\EndIf
+	\ElsIf{state = Recovering}
+		\State state = Recovered
+		\If {SC $>$ 0} 
+			\State state = Building
+			\State $<$B , $\Gamma_{out}$ $>$
+		\Else
+			\If {Initiator}
+				\State $<$PD , $\Gamma_{out}$ $>$
+			\Else	
+				\State  $<$R , Parent $>$
+			\EndIf
+		\EndIf
+	\ElsIf {state = Building}
+		\State state = Healthy
+		\If { Not Initiator}
+			\State  $<$R , Parent $>$
+		\EndIf
+	\EndIf
+\EndIf
+\EndProcedure
+\end{algorithmic}
+%\end{multicols}
+\end{algorithm}	
+
+
+\subsection{Multi-collector Algorithm}
+\label{multialgo}
+\begin{algorithm}[H]
+\caption{Edge Deletion}
+\label{Link Deletion}
+\scriptsize
+%\begin{multicols}{2}
+\begin{algorithmic}[1]
+\Procedure{OnEdgeDeletion}{}
+\State Decrement SC, WC, or PC
+  \If {msg.CID = CID}
+    \State Decrement RCC
+  \EndIf
+	\If {Garbage} 
+		\If {state = Recovered}
+			\State $<$PD , $\Gamma_{out}$ $>$
+		\ElsIf {Simply Dead}
+			\State $<$D , $\Gamma_{out}$ $>$
+			\State Delete the node.
+		\EndIf
+	\ElsIf {Weakly Supported}
+		\State Toggle SC and WC
+    \If {$\Gamma_{out} = \bot$}
+      \State return
+    \EndIf
+		\State CID = new Collector Id
+		\State $<$PH , $\Gamma_{out}$ $>$
+		\State PhantomNodeFlag $=$ true
+	\ElsIf {PC $>$ 0 \& SC $=$ 0}
+		\State Toggle SC and WC.
+		\If { Not Initiator}
+				\State $<$R , Parent, CID, True$>$
+		\EndIf
+		\If { Waiting for return msgs }
+			\State Rerecover = true
+			\State Rephantomize = true
+		\EndIf
+	  \State CID = new Higher Collector Id
+	\EndIf
+\EndProcedure
+\end{algorithmic}
+%\end{multicols}
+\end{algorithm}	
+
+	
+\begin{algorithm}[H]
+\caption{On receiving Phantomize messge}
+\label{Phantom message received}
+\scriptsize
+%\begin{multicols}{2}
+\begin{algorithmic}[1]
+\Procedure{OnPhantomizeReceive}{}
+\State Decrement SC/WC and Increment PC.
+\If{state = Phantomizing}
+	\If{Initiator}
+		\If{CID $\geq$ msg.CID}
+			\State $<$R , msg.sender, CID $>$
+		\Else
+			\State Parent $=$ msg.sender
+			\State CID $= \bot$ 
+		\EndIf
+	\Else
+		\State $<$R , msg.sender, CID $>$
+	\EndIf
+\ElsIf {state = Phantomized or Healthy}
+	\State Parent = msg.sender
+	\State $<$ R , msg.sender, CID $>$
+\ElsIf {SC $=$ 0 }
+	\State Toggle SC and WC
+	\State Parent = msg.sender
+	\State state $=$ Phantomizing and PhantomNodeFlag = true
+	\State $<$ PH , $\Gamma_{out}$, CID$>$
+	\If{$\Gamma_{out}$ is empty}
+		\State state = Phantomized
+		\State $<$R , Parent$>$
+	\EndIf
+\ElsIf {state = Building}
+	\If {SC $>$ 0 }
+		\State $<$R , Msg.sender$>$
+	\Else
+  	\State Rephantomize = true
+		\If {Not an initiator}
+			\State $<$R , Parent $>$
+			\State Parent = msg.sender
+		\Else
+			\If {msg.CID $>$ CID}
+				\State CID = $\bot$ and Parent = msg.sender
+			\Else
+				\State $<$R , Msg.sender, CID $>$
+				\State Rerecover = true
+			\EndIf
+		\EndIf
+	\EndIf
+\EndIf
+\EndProcedure
+\end{algorithmic}
+%\end{multicols}
+\end{algorithm}	
+	
+	
+\begin{algorithm}[H]
+\caption{On receiving Return message}
+\label{ Done message received}
+\scriptsize
+%\begin{multicols}{2}
+\begin{algorithmic}[1]
+\Procedure{OnReturnReceive}{}
+\If{msg.SRO = true}
+  \State SRO = true
+\EndIf
+\If{All return msgs received \& Phantomizing}
+	\If {Initiator or Rerecover = true}
+		\State Rerecover = false
+		\If {SC$>$0 }
+			\State state = Building			
+			\State $<$ B , $\Gamma_{out}$, CID $>$
+		\Else
+			\State state = Recovering
+			\State $<$ RC , $\Gamma_{out}$, CID $>$
+		\EndIf
+	\Else
+		\State $<$R , Parent $>$
+	\EndIf
+\EndIf
+\If{All return msgs recieved \& Building}
+	\If{SC $>$ 0 }
+		\If {not an Initiator}
+			\State $<$ R , Parent $>$
+		\EndIf
+		\State state = Healthy.
+	\Else
+		\State Rephantomize = false 
+		\State Rerecover = true
+		\State state = phantomizing
+		\State $<$PH , $\Gamma_{out}$, CID $>$
+	\EndIf
+\EndIf
+\If{All return msgs received \& Recovering}
+	\If{RCC = PC}
+		\If{Initiator}
+			\If{SRO = true}
+				\State Rerecover = true
+	  \State CID = new Slightly Higher Collector Id
+				\State SRO = false
+			\EndIf
+			\If{Rerecover = true or SC $>$0}
+				\State Rerecover = false
+				\State RCC = 0
+				\If{SC $=$ 0}
+					\State state = Recovering
+					\State $<$RC , $\Gamma_{out}$,CID $>$
+				\Else
+					\State state = Building
+					\State $<$ B , $\Gamma_{out}$, CID $>$
+				\EndIf
+			\ElsIf{Garbage}
+				\State $<$ PD , $\Gamma_{out}$, CID $>$
+			\EndIf
+		\Else
+			\If{SRO = true}
+				\State State = Recovered
+				\State SRO = false
+				\State $<$R , Parent, CID, True $>$
+			\ElsIf{Rerecover = true or SC $>$0}
+				\State Rerecover = false
+				\If{SC $=$ 0}
+					\State state = Recovering
+					\State $<$ RC , $\Gamma_{out}$, CID$>$
+				\ElsIf{SC $>$ 0}
+					\State state = Building
+					\State $<$ B , $\Gamma_{out}$, CID $>$
+				\EndIf
+			\ElsIf{Maybe Delete}
+				\State state = Recovered
+				\State $<$R , Parent$>$
+			\EndIf
+		\EndIf
+	\ElsIf{RCC $\neq$ PC}
+		\If {Rerecover = true}
+			\State Rerecover = false
+			\If{Initiator}
+				\State RCC = 0
+			\EndIf
+			\If{SC $=$ 0}
+				\State state = Recover
+				\State $<$ RC , $\Gamma_{out}$, CID $>$
+			\ElsIf{SC $>$ 0}
+				\State state = Building
+				\State $<$B , $\Gamma_{out}$, CID $>$
+			\EndIf
+		\EndIf
+	\EndIf
+\EndIf
+\EndProcedure
+\end{algorithmic}
+%\end{multicols}
+\end{algorithm}	
+
+
+	
+\begin{algorithm}[H]
+\caption{On receiving Build message}
+\label{Build message received}
+\scriptsize
+%\begin{multicols}{2}
+\begin{algorithmic}[1]
+\Procedure{OnBuildReceive}{}
+\State Increment SC/WC, and Decrement PC.
+  \If {msg.CID = CID}
+    \State Decrement RCC
+  \EndIf
+\If{state = Building or SC $>$ 0}
+	\State $<$ R , Msg.Sender, CID $>$
+\ElsIf{state = Phantomizing}
+	\If{CID $\geq$ msg.CID or CID = $\bot$}
+		\State $<$R , msg.sender $>$
+	\Else
+		\If{Not Initiator}
+			\State $<$R , Parent $>$
+		\EndIf
+		\State Parent = msg.sender
+		\State CID = msg.CID and Rerecover = True
+	\EndIf
+\ElsIf{state = Phantomized}
+	\State Parent $=$ msg.sender
+	\State CID $=$ msg.CID
+	\If{PhantomNodeFlag $=$ True}
+		\State state = Building
+		\State $<$ B , $\Gamma_{out}$, CID $>$
+	\Else
+		\State state = Healthy
+		\State $<$ R , Parent $>$
+	\EndIf
+\ElsIf{state = Recovering \& Waiting for return msgs}
+	\If{CID$\geq$msg.CID}
+		\State $<$R , msg.sender, CID $>$
+	\Else
+		\If{Not Initiator}
+			\State $<$ R , Parent, CID, True $>$
+		\EndIf
+		\State CID = msg.CID
+		\State Parent = msg.Sender
+	\EndIf
+\ElsIf{state = Recovering \& \\ \hspace{0.35in} All return msgs received \&  RCC $<$ PC}
+	\If{CID$\geq$msg.CID}
+		\State $<$R , msg.sender, CID $>$
+		%\State Rerecover = true
+		%\State W = W + 1
+		%\State $<$ R  , CID $>$
+	\Else
+		\If{Not Initiator}
+			\State $<$R , Parent , True $>$
+		\EndIf
+		\State Parent = msg.sender
+		\State CID = msg.CID
+		%\State W = W + 1
+		%\State $<$ R  , CID $>$
+  %\State Rerecover = true
+	\EndIf
+  \State Start Building
+\ElsIf{state = Recovered}
+	\State Update RCC if required
+	\State CID = msg.CID
+	\State Parent = msg.sender
+	\State state = Building
+	\State $<$ B , $\Gamma_{out}$, CID $>$
+\EndIf
+\EndProcedure
+\end{algorithmic}
+%\end{multicols}
+\end{algorithm}	
+
+
+\begin{algorithm}[H]
+\caption{On receiving Recovery message}
+\label{Recovery message received}
+\scriptsize
+%\begin{multicols}{2}
+\begin{algorithmic}[1]
+\Procedure{OnRecoveryReceive}{}
+\If{S $>$ 0}
+	\State $<$R , msg.sender $>$
+\ElsIf{state = Phantomizing}
+	\If{Not Initiator}
+		\State $<$R , Parent, CID, True $>$
+	\EndIf
+	\State Increment RCC 
+	\State Rerecover = True
+	\State CID = msg.CID
+	\State Parent = msg.sender
+\ElsIf{state = Phantomized}
+	\State Increment RCC
+	\State state = Recovering
+	\State CID = msg.CID
+  \If {SC $>$ 0}
+	\State $<$B , $\Gamma_{out}$, CID $>$
+  \Else
+	\State $<$RC , $\Gamma_{out}$, CID $>$
+  \EndIf
+	\State Parent = msg.sender
+\ElsIf{state = Building}
+	\If{msg.CID $<$ CID}
+		\State Rephantomize = true
+		\State Rerecover = true
+		\State $<$R , msg.sender $>$
+	\ElsIf {msg.CID = CID}
+		\State $<$R , msg.sender $>$
+	\Else
+		\If{Not Initiator}
+			\State $<$R , Parent, CID, True $>$
+		\EndIf
+		\State CID = msg.CID
+		\State Rerecover = true
+		\State Parent = msg.sender
+		\State Rephantomize = true
+	\EndIf
+\ElsIf{state = Recovering}
+	\If{msg.CID $<$ CID}
+		\State $<$R , msg.sender $>$
+	\ElsIf{msg.CID = CID}
+		\State Increment RCC
+		\State $<$R , msg.sender $>$
+		\If{Not Initiator \& RCC = PC \&  \\ \hspace{1.0in} All return msgs received}
+			\State $<$R , Parent $>$
+		\EndIf
+	\Else
+		\If{Not Initiator}
+			\State $<$R , Parent, CID, True $>$
+		\EndIf
+		\State CID = msg.CID
+		\State RCC = 1
+		\State Parent = msg.sender
+		\If {Waiting for return msgs}
+			\State Rerecover = True	
+		\Else 
+			\State $<$RC , $\Gamma_{out}$, CID $>$
+		\EndIf
+	\EndIf
+\ElsIf {state = Recovered}
+	\State RCC = 1;
+	\State CID = msg.CID
+	\State state = Recovering
+	\State Parent = msg.sender
+	\State $<$RC,  $\Gamma_{out}$, CID, $>$
+\EndIf
+\EndProcedure
+\end{algorithmic}
+%\end{multicols}
+\end{algorithm}	
+
+\subsection{Appendix of proofs}
+\label{proofapp}
+\begin{replemma}{lem:nophan}
+After phantomization, nodes in the build set are not phantom nodes.
+%\label{Not Phantomized}
+\end{replemma}
+\begin{proof}
+By definition, a strong path from $R$ to each node in the build set
+exists, therefore phantomization spreading from the initiator cannot take
+away the last strong edge, and so the build set will not phantomize.
+\end{proof}
+
+\begin{replemma}{lem:buildset}
+After phantomization, if the initiator has strong incoming edges, then the
+initiator is not dead.
+%\label{lem:buildset}
+%nodes that are the source of those
+%strong edges form the build set.
+\end{replemma}
+\begin{proof}
+Only nodes in the supporting set can keep the initiator, $I$, alive. % since
+%$\Gamma_{\rm in}(I)$ is a subset of the supporting set.
+When the initiator became a phantom node, it converted its weak incoming edges to strong.
+However, since nodes in the recovery set all became phantom nodes by Lemma~\ref{lem:phant},
+they will not contribute strong support to the initiator.
+Since nodes in the build set do not phantomize by Lemma~\ref{lem:nophan}, the edges connecting them to the initiator
+remain strong.
+\end{proof}
+
+\begin{replemma}{lem:phant}
+After phantomization, nodes in the recovery set are phantom nodes.
+%\label{lem:phant}
+\end{replemma}
+\begin{proof}
+By definition, no strong path from $R$ to the nodes in the recovery set
+exists. The strong edges they do have come from the initiator, and these will
+phantomize after the initiator phantomizes. Once that happens, the recovery
+set will phantomize.
+\end{proof}
+
+\begin{replemma}{lema:recoveryset}
+After phantomization,
+if a phantom node contains at least one strong incoming edge,
+it belongs to the recovery set.
+%\label{lem:recoveryset}
+\end{replemma}
+\begin{proof}
+
+Every node in the recovery set will phantomize by Lemma~\ref{lem:phant}, and every node
+in the recovery set will have a non-strong path from $R$ prior to
+phantomization. Phantomization, however, will cause the nodes to toggle,
+converting the non-strong path from $R$ to a strong path for at least one
+node in the recovery set. Therefore, the
+recovery set will contain at least one node with at least one strong incoming edge.
+
+\end{proof}
+
+\begin{replemma}{TimeC}
+SCA finishes in O(Rad(i,$G_{a}$)) time, where $G_{a}$ is the graph
+induced by affected nodes, i is the initiator, and Rad(i, $G_{a}$) is radius
+of the graph from i.
+%\label{TimeC}
+\end{replemma}
+\begin{proof}
+In each time step, \emph{phantomization} spreads to the $\outneighbors$ of the previously
+affected nodes, increasing the radius of the graph of phantom nodes by 1.
+In O(Rad(i,$G_{a}$)) time, all the nodes in $G_{a}$ receive
+a \emph{phantomize} message, since all the nodes in $G_{a}$ are at distance less than
+or equal to Rad(i,$G_{a}$) from i. In the reverse step, the same argument can be
+applied backward.
+%In r time, the $( Rad(i,G_{a}) - r) ^{th}$ neighborhood of i
+%receives the \emph{return} messages.
+So phantomization completes in O(Rad(i,$G_{a}$) time.
+
+In the correction phase, during the forward step, in r time, r neighborhoods of i
+received \emph{recovery} or \emph{build} or \emph{plague delete} message, until
+the affected subgraph is traversed.
+%In the forward step
+%of the algorithm, the message recovery or build has to received by all the
+%nodes in the affected subgraph.
+%So in O(Rad(i, $G_{a}$)) round, all nodes receive
+%forward step message of the recovery step.
+%Unlike other process,
+%the reverse step of the recovery step is very complicated.
+In the reverse step of \emph{build} or \emph{recovery}, however,
+a \emph{return} message might initiate the build process.
+%The build
+%process will send build messages to nodes in the subgraph reachable from the build
+%process initiator.
+While the build process nodes send return messages, the nodes
+will become healthy thereby reducing the Rad(i,$G_{a}$).
+So in the worst case, all nodes that received recovery might build. Because
+each node will have only one parent, the return
+step cannot take more than O(Rad(i, $G_{a}$) time.
+\end{proof}
+
+\begin{replemma}{CCC}
+SCA sends O($E_{a}$) messages, where $E_{a}$ is the number of edges
+in the graph induced by affected nodes.
+%\label{CCC}
+\end{replemma}
+\begin{proof}
+%Appendix ~\ref{proofapp} contains the proof.
+
+In the forward step of the phantomization, all the nodes in the dependent set send the
+\emph{phantomize} message to their $\outneighbors$, and each node can do this at most
+once (after which the phantom node flag is set).
+So the forward step of the algorithm uses only
+O($E_{a}$) messages. In the reverse step, the \emph{return} messages are sent
+backward along the edges of the spanning tree. So the reverse step sends O($V_{a}$)
+messages, where $V_{a}$ is the number of nodes in the affected subgraph.
+So Phantomization uses O($E_{a}$) messages.
+
+In the forward step of the recovery/building, either a {\em recovery} message, a {\em build} message,
+or both
+traverses every edge, so the forward step of the algorithm uses O($E_{a}$) messages.
+In the
+reverse step of the algorithm, the \emph{return} messages are sent back to the parent a maximum
+of two times (once for recovery, once for build), traversing a subset of the edges in the
+reverse direction. Thus, there is a maximum of four message traversals for any edge.
+%A build process initiated by any node will send build message in the same edges that
+%sent return earlier. But once the edges sent build return message, the nodes will never
+%be part of the affected subgraph. So they never receive a message. So all edges send
+%constant number of recovery, build and return messages.
+In every forward step of the plague delete, all outgoing edges are consumed, and therefore it 
+takes O($E_a$) messages.
+%a radius of 1. Therefore, in O(Rad(i,$G_{a}$)) time it will spread to the entire subgraph.
+\end{proof}
+
+\begin{replemma}{MSCP}
+SCA sends messages of O(log(n)) size, where n is the total number of nodes
+in the graph.
+%\label{MSCP}
+\end{replemma}
+\begin{proof}
+The messages have to hold a value at least as large as the count of nodes in the system
+which are O(log(n)) size. Apart from the ids, the message also contains the weight of
+node which is constant in size. In the return message, our algorithm only uses the id
+of the sender and receiver. So all the messages in the SCA are of
+O(log(n)) size.
+\end{proof}
+
+\begin{reptheorem}{pro:livenesss}
+All dead nodes will be deleted at the end of the correction phases.
+%\label{pro:livenesss}
+\end{reptheorem}
+\begin{proof}
+%A node can be dead node only by losing all the strong 
+%incoming edges. If a node lost all strong incoming edges, by the 
+%rules of phantomization phases, the node will become initiator and
+%detect if it is garbage node. Initiator also detects all the purely
+%dependent nodes in the phantomization phase. So when an initiator decides the node is dead, it deletes all purely dependent nodes
+%too.
+Assume a node $y$, is a dead node, but flagged as live
+node by the correction phase. If $y$ becomes live,
+then it must have done so because its edges were rebuilt during building.
+If so, then either $y$ has a strong count, or there exists a node $x$ with a strong count
+ which also has a phantom path to $y$. However, any node with a strong count at the end
+ of phantomization is a live node by Lemma~\ref{lem:buildset} and Lemma~\ref{lema:recoveryset}, and because a path from $x$ to $y$ exists, $x$ is also live.
+ %Node $x$ must be part of the supporting set to have path from R to it. If the initiator is dead node and flagged as live node at the 
+ %end of the correction phases, then $x$ must not in supporting set. 
+ %From figure \ref{fig:completeabstract}, it is clear then $x$ must
+ %belong to $B'$. No nodes in the purely dependent set has non-zero
+ %strong count at the end of the phantomization phases. So the subgraph will never execute /$Build /$ phase. Thus for initiator to
+ %be live node, $x$ must belong to supporting.
+ This contradicts our
+ assumption.
+\end{proof}
+
+
+\begin{reptheorem}{pro:safetys}
+No live node will be deleted at the end of the correction phases.
+%\label{pro:safetys}
+\end{reptheorem}
+
+\begin{proof}
+Assume a node, $x$ is live, but it is deleted. If $x$ is the initiator,
+and is live then the supporting set is not empty. If the build set isn't
+empty, then $x$ will have a strong count, so it won't be deleted. If
+the build set is empty and the recovery set is non-empty, then correction
+will build a strong edge to $x$, so it won't be deleted. This contradicts
+our assumption. Now assume $x$ is dead, but it causes some other node to
+be deleted. If $x$ is dead, then the supporting set is empty and the purely
+dependent set is dead. The independent set has a strong count before the
+collection process, so it won't delete. The nodes in the dependent set
+that had a non-strong path from $R$ before phantomization, will have a strong
+path from $R$ after toggling and recovery/build, so they will not delete. This
+also contradicts our assumption.
+%ermination detection algorithm embedded in our algorithm ensures
+%hat the initiator does not make any decision until the phases are 
+%omplete in all the affected subgraph. There are two cases where 
+%nitiator is live node and it is deleted and a node in the affected
+%ubgraph that is live and has no path to initiator exist. For the
+%irst case, after the end of the phantomization, for the initiator
+%o be live, there has to at least a node in the supporting set . If
+%here is a build set available, then the initiator will not delete 
+%ny nodes in the affected subgraph. If build set is empty and recovery set is not empty, then the recovery phase ensures that 
+%he initiator incoming edge(s) are converted into strong. So at the
+%nd of the recovery phase, the initiator will not delete any nodes in the affected subgraph. In the second case, where the initiator is dead, but not all the nodes in the affected subgraph is dead, at
+%he end of the recovery phase, the initiator will not have any strong incoming edges. So the initatior starts the plague delete. But if there exist a subgraph that contains live node, then the subgraph of nodes does not reach the initiator back. So, according 
+%o \ref{fig:completeabstract}, it must be $C$, $D$, $E$. As $D$ has
+%trong path from R before phantomization and the Adversary stops 
+%utating graph after the collection process, the strong path from R
+%emains through out the process and the plague delete will not delete the node. Nodes in $C$ and $E$ will convert the non-strong
+%ath from R into strong path at the end of phantomization. So during the recovery phase, the nodes build (converting phantom edges into strong or weak) the reachable affected 
+%ubgraph. So when a plague delete message reaches the node that are
+%ive inside the affected subgraph, the strong count of the nodes never drop to zero and never will be deleted at the end of correction process.
+\end{proof}
+
+
+
+\begin{replemma}{lem:acyclic}
+The collection process graph is eventually acyclic.
+%\label{lem:acyclic}
+\end{replemma}
+\begin{proof}
+If a cycle exists between two process graphs, A and B, then recovery or
+build messages must eventually propagate from one to the other. Without
+loss of generality, assume A has higher priority than B. During the
+correction phases, messages propagate along all phantom edges, and
+in the process take ownership of any nodes they touch. Eventually, therefore,
+there should be no edges from A to B.
+\end{proof}
+
+\begin{replemma}{lem:ordered}
+If an entity $A$ precedes an entity $B$ topologically in the collection process graph, and
+$A$ has a lower priority than $B$, entity $A$ will complete before entity $B$ and both will
+complete in isolation.
+%\label{lem:ordered}
+\end{replemma}
+\begin{proof}
+Consider a node, $x$, that has incoming edges from both $A$ and $B$. Process $B$ will
+have ownership of the node during the recovery or build phase, but until the
+edges from $A$ are either built or deleted, $x$ will have an $RCC$ equal to the
+number of edges from $B$, and $PC$ equal to the sum of the edges from $A + B$.
+So the recovery or build phase of $B$ must take place after $A$, and so
+$B$ will operate in isolation. Since there are no edges from $B$ to $A$, and since $B$ is not
+making progress, $B$ does not affect $A$, and $A$ is in isolation.
+\end{proof}
+
+\begin{replemma}{deletionI}
+Edge deletion by the Adversary does not violate isolation.
+%\label{deletionI}
+\end{replemma}
+\begin{proof}
+%Lemma: When an Adversary deletes an edge from a graph, it will not violate isolation.
+%\begin{itemize}
+If we simply remove an edge $x\rightarrow y$ from inside a collection process
+graph, that might violate isolation because it removes $y$ from the graph.
+However, we have already developed a method to remove a node from the graph
+without violating isolation, and that is to give the node to a higher
+collection process id. So when the edge is deleted, a new, higher collection
+process is created and it is given ownership of $y$. By
+Theorem~\ref{thm:alliso}, the old and new collection process will proceed in
+isolation.
+%
+%  \item Consider that $y$ is recovered and there is no phantom path from $y$ to $x$
+%    There can be no effect because no further messages can reach $x$ from $y$ (i.e. it has received recovery messages along $\Gamma_{\rm in}(x)$, and has replied with return), and $y$ is expecting no further messages from $x$ (since $x$ has already sent return). Therefore, collection $x_1$ proceeds in isolation.
+%  \item Consider that $x$ is recovered and there is a phantom path from $y$ to $x$
+%    In this case, collection process $x_2$ will take ownership of $x_1$, and any decision it makes to build will not matter. It is not possible that $x_1$ will delete, because, because at the time of the deletion $y$ was live. If it were not, the delete would not be possible because we cannot mutate a live graph.
+%  \item Consider that $y$ is phantomized and not recovered. In this case, the recovery will not proceed to $y$, and the recovery will proceed as if the paths originating on $y$ never existed. The eventual recovery or build will, therefore, proceed in isolation.
+%  \end{itemize}
+\end{proof}
+

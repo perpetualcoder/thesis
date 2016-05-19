@@ -1,0 +1,392 @@
+\section{Multi-Collector Algorithm (MCA)}
+\label{multi}
+We now discuss the case where mutations in $G$ are not serialized and the Adversary is allowed to create and delete edges in $G$ during the collection process.
+As a consequence, multiple deletion events might create collection processes
+with overlapping (induced) subgraphs, possibly trying to perform different phases of the
+algorithm at the same time. 
+We assign unique identifiers to collection processes to break the symmetry among multiple collectors and a transaction approach to ordering the computations of collectors if collection operations conflict. By doing this, we allow each collection process to operate in \emph{isolation}.
+%We discuss in detail separately below about the symmetry breaking technique, our transaction approach of computation ordering, and the handling of the mutations of the Adversary during the collection processes.
+%Our multi-collector algorithm also has four phases similar to the single collector algorithm,
+Appendix \ref{multialgo} contains the detailed pseudocode of the multi-collector algorithm. 
+
+\begin{definition}[Isolation]
+A collection process is said to proceed in isolation if either (1) the affected subgraph does not mutate, or (2) mutations to the affected subgraph occur, but they do not affect the decisions of the initiator to delete or build, and do not affect the decisions of the recovery set to build by the correction phases.
+\end{definition}
+
+%\subsection{Collection identifiers}
+
+
+\paragraph{Symmetry Breaking for Multiple Collectors:}
+Each collection process has a unique id. If there are two or more (collection) processes acting on the same shared
+subgraph, the collection process with the higher id (higher priority) will
+acquire ownership of the nodes (of the shared subgraph).
+%A node changes
+%ownership by marking itself with the process id. It does this when it
+%receives a message from a process with higher id.
+When a node receives a message from a higher priority process, it marks itself
+with that new higher id.
+
+The phantomization phase of the multi-collector does not mark nodes with the
+collection process id, however, as the simultaneous efforts of multiple
+collection processes to phantomize do not interfere in a harmful way.
+Moreover, when an initiator node, $I$, receives a \emph{phantomize} message from a higher
+priority collection process, $I$ will unmark its collection id, and will,
+therefore, loses its status as an initiator.
+
+Another graph, which we call the \emph{collection process graph} and denote by  $C$, is formed
+by treating each set of nodes with the same collection id as a single node.
+Edges in $G$ are included in $C$ if and only if they connect nodes that are part
+of different collection processes.
+To avoid ambiguity,
+we refer to nodes in $C$ as \emph{entities}.
+
+\begin{lemma}
+The collection process graph is eventually acyclic.
+\label{lem:acyclic}
+\end{lemma}
+\begin{proof}
+Appendix ~\ref{proofapp} contains the proof.
+\end{proof}
+
+\paragraph{Recovery Count:}
+Consider the configuration of nodes in Fig.~\ref{fig:recoverycount}.
+Initially, we have strong paths connected to both $N_6$ and $N_1$
+and after these paths are deleted we have two collection processes. Assume that these two collection processes,
+with priority $I_6$ and $I_1$, complete their phantomizations phases, and process $I_6$ begins its
+recovery phase. Process $I_6$ should identify node $N_4$ as belonging to the recovery set,
+but if process $I_1$ has not completed recovering and building,  it will not. Therefore, the recovery phase for
+$I_6$ will complete and prematurely delete $N_6$.
+
+We remedy this kind of conflict using {\em recovery count}. %, we introduce the recovery count. 
+The recovery
+count tracks the number of \emph{recovery} messages each node receives from its
+own process. A recovering node can neither send the
+\emph{return} message nor start deleting until
+the recovery count is equal to the phantom count. The fourth edge type in 
+the abstract refers to the recovery count. A recovery edge is also a phantom edge,
+and a phantom edge will be converted to a recovery edge when a recover message is
+sent for that edge with the same CID.
+
+In the configuration discussed above, this would cause process $I_6$ to stall at
+node $N_4$ while it waits for the recovery count and phantom count to become
+equal. When process $I_1$ rebuilds the edge to $N_4$ as strong, this condition
+is met and process $I_6$ stops waiting and rebuilds.
+
+We assume in the discussion above that $I_6$ has higher priority than $I_1$. If the priority
+were reversed, $I_1$ would take over building node $N_4$, but this
+introduces additional complexity which we will now address.
+
+\begin{lemma}
+If an entity $A$ precedes an entity $B$ topologically in the collection process graph, and
+$A$ has a lower priority than $B$, entity $A$ will complete before entity $B$ and both will
+complete in isolation.
+\label{lem:ordered}
+\end{lemma}
+\begin{proof}
+Appendix ~\ref{proofapp} contains the proof.
+\end{proof}
+
+%Fig.~\ref{fig:recoverycount} describes the significance
+%of the recovery count. The randomization involved in the collections will not
+%guarantee the correctness. To regulate the algorithm based on the topology of
+%the graph, recovery count helps to understand the topology of the related subgraph
+%for a node. This recovery count helps to avoid premature deletion which is one of
+%the most fundamental guarantee required by any garbage collectors.
+\begin{figure}
+\begin{center}
+\scalebox{0.6}[0.6]{\input{figs/recoverycount}}
+\caption{We depict two collection processes in the recovery phase.
+ Each circle is a node.
+Node properties are: node id (ID),
+phantom count (PC), recovery count (RCC), collection id (CID). Bold borders denote
+initiators, and dot and dashed edges denote phantom edges.
+%In the above
+%scenario, $N_4$ belongs to collection process $N_6$. The RCC is 1 in $N_4$
+%due to edge $N_6 \rightarrow N_4$. Edge $N_2 \rightarrow N_4$ does not increment
+%RCC in $N_4$ due to its smaller collection id,
+%preventing $N_4$ from sending a \emph{return} message to $N_6$. The RCC
+%creates an ordering in the operations of the two collection processes and
+%avoids premature deletion of $N_6$ and its affected subgraph.
+}
+\label{fig:recoverycount}
+\end{center}
+\vspace{-8mm}
+\end{figure}
+
+\paragraph{Transaction Approach:}
+Consider a \emph{recover} message, $m$, arriving at node $N_4$ from $N_2$ (Fig.~\ref{fig:recoverycount}). This time, assume that the
+collection id of $I_1$ is higher than $I_6$. % The higher
+%priority collection process needs to take control.  
+If $N_4$ is in the recovered
+state, the collection id on $x$ is updated with the collection id in $m$
+($x.CID \leftarrow m.CID$).  If, however, $x$ is recovering, i.e.
+it is waiting for \emph{return} messages from its $\outneighbors$, a \emph{return} message, $r$, is immediately sent to $N_4$'s
+parent, $N_4$'s parent is set to point to $N_2$, and the
+\emph{re-recover flag} on $x$ is set. %, and the \emph{start recovery over (SRO)}
+%flag on $r$.
+The re-recover flag will cause recovery to restart on $x$ once the
+current recovery operation finishes. This will allow the higher priority
+collection to take over managing the subgraph.
+
+In addition, a flag called \emph{start recovery over (SRO)} is set on the
+\emph{return} message.
+The SRO propagates back to $N_6$, where the recovery count will
+be reset and the entire recovery phase will start over,
+but with a slightly
+higher collection priority, $I_6'$, which is still lower than $I_1$.  The slightly higher priority
+(signified by the prime)
+doesn't change the relative priority compared to another independent collection process, it merely
+ensures that any
+increments to the recovery count come from the new, restarted recovery
+operation and not leftover messages from the old one ($I_6$).
+After this, the new recovery phase
+will not proceed until the phantom count is equal to the recovery count ($PC = RCC$), which ensures that the new recovery
+does not start until the original \emph{recovery} phase is complete.
+It is easy to see that the new recovery
+triggered by the SRO flag is similar to the rollback of a transactional system.
+
+%In dynamic system, when collectors share affected subgraphs, the collectors
+%might be processing different phase of the algorithm. Synchronization among
+%collectors is essential for correctness of the algorithm as the
+%algorithm makes decision about liveness by assuming all the nodes in the
+%affected subgraph are in the same state.
+
+When a node changes ownership, the node has to join the phase of the new collection.
+Each
+node has three redo flags: rephantomize, rebuild,
+and re-recover.
+%Apart from all the redo flag, there is also  "start
+%over" flag. when a initiator sees the start over flag set on the node, it
+%simply redo the recently executed phase again to synchronize the affected
+%subgraph. Every start over process is to let the initiator or the affected
+%node understand the changes in the subgraph it is part of. This transaction
+%approach helps nodes to change ownership when it becomes member of dependent
+%set of multiple initiator.
+These flags only take effect
+after all \emph{return} messages % from the $\outneighbors$
+have come back.
+This way the messages of old collection processes will never be floating
+in the system.
+%All messages in flight are related to the current collections.
+%This ensures when a node is dead, there will be no messages supposed to be
+%received by the node.
+
+%\subsection{Phantomization}
+
+\begin{lemma}
+If an entity $A$ precedes an entity $B$ in the collection process
+graph $C$ with respect to a topological ordering, and $A$ has higher priority than $B$, entity $A$ will take ownership of
+entity $B$ and $A$ will proceed in isolation.
+\label{lem:takeover}
+\end{lemma}
+\begin{proof}
+Because $A$ has higher priority, it takes ownership of every node it
+touches and is thus unaware of $B$. So it proceeds in isolation. If $B$ loses
+ownership of a recovered node, it will not affect isolation because a recovered
+node has received \emph{recovery} messages on all its incoming edges ($RCC=PC$),
+and has already sent its return.
+%Thus, no further messages will be sent to it
+%or received from it.
+If $B$ loses a node that is building or recovering,
+%this would violate isolation, so
+%the recovery or build
+$B$ is forced to start over. In
+the new recovery or build phase, $B$ will precede $A$ in the  topological order, and both will
+proceed in isolation. % by pointing to the
+%nodes A has taken from B.
+\end{proof}
+
+\begin{theorem}
+All collection processes will complete in isolation.
+\label{thm:alliso}
+\end{theorem}
+\begin{proof}
+By Lemma \ref{lem:acyclic} we know that the collection process graph will eventually
+be topologically ordered, and the ordering will not violate
+isolation given by Lemma \ref{lem:takeover}. Once ordered, the
+collection processes will then complete in order proven by Lemma \ref{lem:ordered}.
+\end{proof}
+
+\begin{corollary}
+In quiescent state (i.e. one in which the Adversary takes no further actions on $G_{a}$), with $p$ active collection processes, our algorithm finishes in $O(Rad_{all})$ time where $G_{a}$ is the
+affected subgraphs of all connected collection process and
+$Rad_{all}$ is the sum of the radii of the affected subgraphs of all $p$ initiators.
+\end{corollary}
+
+\paragraph{Handling the Mutations of The Adversary:}
+Creation of edges and nodes by the Adversary poses no difficulty. If an edge is
+created that originates on a phantomized node, the edge is created as a phantom
+edge. If a new node, $x$, is created, and the first edge to the node comes from
+a node, $y$, then $x$ is created in the same state as $y$ (e.g., phantomized,
+recovered, etc.).
+
+\begin{lemma}[Creation Isolation]
+Creation of edges and nodes by the Adversary does not violate isolation.
+\label{creationI}
+\end{lemma}
+\begin{proof}
+The addition of edges cannot affect the isolation of a graph because (1) addition
+of an edge cannot cause anything to become dead and (2) if an edge is created to
+or from any edge in a collection process, then the process was already live by
+Axiom~\ref{ax:immut}.
+\end{proof}
+
+Deletion is comparatively difficult, though.
+If the Adversary deletes a phantom edge $x \rightarrow y$ from collection $x_1$, and $\Gamma_{\rm in}(y)$ is not empty,
+%collection process $x_1$ and two nodes within it, $x$ and $y$, an edge exists between
+%them, $x\rightarrow y$, and $x$ is phantomized,
+it is not enough to reduce
+the phantom count on $y$ by 1. In this case, $y$ is made the
+initiator for a new collection process, $y_2$, such that $y_2$ has higher priority than $x_1$. If $y$ is in
+the recovering state, it sends \emph{return} with $SRO = true$,
+and re-recovers $y$.  If $x$ is not phantomized, the
+procedure is similar to the single collector algorithm.
+
+\begin{lemma}[Deletion Isolation]
+Edge deletion by the Adversary does not violate isolation.
+\label{deletionI}
+\end{lemma}
+\begin{proof}
+Appendix ~\ref{proofapp} contains the proof.
+\end{proof}
+
+
+\begin{theorem}[Liveness]
+Eventually, all dead nodes will be deleted.
+\label{liveness}
+\end{theorem}
+\begin{proof}
+By Axiom \ref{ax:immut}, we know the Adversary cannot create any
+edges to dead nodes.
+Theorem \ref{pro:livenesss} proves that if a  collection process
+works in isolation, all dead nodes will be deleted.
+%When the Adversary deletes an edge in the affected subgraph, a new initiator
+%is created for the node that lost the edge regardless of the type
+%of the edge.
+Lemma \ref{deletionI} proves that the deletion of an edge in the
+affected subgraph does not affect isolation property.
+%So this new initiator proceeds the algorithm in
+%an attempt to finish the collection process.
+Lemma \ref{thm:alliso} proves that indeed all collection processes
+complete in isolation. Theorem \ref{pro:livenesss} proves all collection
+processes in isolation delete dead nodes. Thus, eventually, all dead nodes will be deleted.
+%
+%A collection process is finished in isolation if no other %collection
+%process change the state of any node in the affected subgraph of
+%the process. If the affected subgraph nodes experience a change
+%in the state or encountered a different collection, based on %collection id the node decides the collection process it belongs %to. If the states change, the collection process initiator node is %notified. The collection id avoids the livelock among the %collection process using total ordering among the collection id. %So any collection process graph created by processes will become %acylic and totally ordered as proved in \ref{lem:acyclic}, %%%%%%\ref{lem:ordered} and \ref{lem:takeover}.
+\end{proof}
+
+\begin{theorem}[Safety]
+ No live nodes will be deleted.
+\label{safety}
+\end{theorem}
+\begin{proof}
+Theorem \ref{pro:safetys} proves that if a  collection process
+works in isolation, no live nodes of $G$ will be deleted. When the Adversary adds a strong edge in the affected subgraph, Lemma
+\ref{creationI} proves that it does not violate the isolation
+property. Theorems \ref{pro:safetys} and \ref{thm:alliso} prove that no live nodes will be deleted.
+\end{proof}
+
+
+
+
+%\begin{proofs}
+
+%\end{proofs}
+
+%==% \subsection{Recovery}
+%==% Multi-collector recovery phase requires the recovery count to match with
+%==% phantom count to send the return back to parent. This count being
+%==% matched concludes the fact that all the possible path to the node
+%==% is being explored. A node with one or more unexplored path means
+%==% some of the incoming phantom edges are not recovery edges. Apart
+%==% from the recovery count, the recovery part of the algorithm is
+%==% similar to the phantomization.
+
+%==% A healthy node never reacts to the recovery messages and shun the
+%==% further recovery process by sending a return message to the sender
+%==% with start over flag enabled to notify the initiator about change
+%==% in the affected subgraph.
+%==% A phantomizing node always joins the recovery process when a recovery
+%==% hits the node. A non-initiator node responds to the ongoing phantomization
+%==% by sending a return message to the parent and transfers the ownership to the
+%==% recovery process. The ongoing phantomization is not interupted by setting
+%==% the rerecover flag in the node. This transaction bit ensures the collection
+%==% are not stalled and ownership changes seamlessly and the nodes are synced
+%==% to the new collection. On the other hand, a phantomized node simply process
+%==% the recovery message by incrementing the recovery message and moving into
+%==% recovering/building state by assinging collection id, parent and sending recovery/
+%==% build messages to out-neighbors accordingly.
+
+%==% A recovering node interacting with a recovery message requires various
+%==% parameters into decision. Second phase of algorithm uses collection id on
+%==% each node. A lower collection id recovery message will be simply ignored by
+%==% the higher collection id recovering node. This ensures that the lower collection
+%==% id makes the decision about the collection before higher collection id. If the
+%==% higher collection id can eventually make the lower collection id part of
+%==% it, then it will eventually happen. So this ordering helps to solve the
+%==% randomization involved in the collection id. A recovering node of the same
+%==% collection simply increments the recovery count and returns the message to
+%==% the sender. The node will only send return message to the parent if the
+%==% recovery count matched with phantom count and it received all the return
+%==% messages from the out-neighbors. If a recovering node received a
+%==% recovery message from a higher collection id, then the ownership is changed
+%==% with return message to old parent enabling start over. This ownership change
+%==% is different from other ownership change because this requires to erase all the
+%==% older recovery count. So the recovery count is reset to 1 ensuring only the recent
+%==% recovery message is recorded as received. This also involves rerecovering if
+%==% the return messages are pending and otherwise, sending recovery messages to
+%==% out-neighbors.
+
+%==% A recovered node receiving a recovery message is only possible when the
+%==% predecessor of the node changes the ownership. So the node simply reassigns
+%==% the ownership and states and recovery count. A building node with higher
+%==% collection will return the message to sender with transactional flag set. For
+%==% a building node, the edges are transformed from phantom to either or weak. To
+%==% redo the transaction, rephantomize and rerecover flag is set to true. So that
+%==% if the node can actually build, it will rebuild the edges.
+
+%==%
+
+
+
+
+%==% \subsection{Building}
+
+%==% As far as the build message is concerned, when a node receives a build message,
+%==% by default the edge is transformed into either strong or weak. The building
+%==% process will continue to their out-neighbors based on the state. A healthy or
+%==% building node will return the message since they do not have to propogate the
+%==% message to their out-neighbors. A phantomizing node will change ownership
+%==% like anyother phase if the higher collection message is received by the node.
+%==% A phantomized node will spread the build process and will register itself to
+%==% be part of the collection by saving the collection id. A recovering node
+%==% that is waiting to get the return messages from out-neigbhors will react using
+%==% general principle of changing ownership if the higher collection build message
+%==% is received. Otherwise, it sends return message back to the source. Since the node
+%==% is waiting, on the recovery return messages, the node might start a build again.
+%==% If a recovering node with all the return message received receives a building
+%==% message, it is evident the node is waiting for recovery count to be equal to
+%==% phantom count, so the higher collection id build message changes the ownership
+%==% and builds the edges. On the other hand, if the lower or same collection build
+%==% message reaches the recovering node with unmatched counts, will
+%==% simply start the building again. A recovered node will start updating rcc and build
+%==% the edges of out-neighbors and propogate the build process.
+
+%==% \subsection{Deletion}
+
+%==% \begin{lemma}
+%==% Liveness
+%==% \end{lemma}
+
+%==% \begin{lemma}
+%==% Safety
+%==% \end{lemma}
+
+%==% \begin{lemma}
+%==% Time Complexity
+%==% \end{lemma}
+
+
+
