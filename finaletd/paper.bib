@@ -1,0 +1,656 @@
+@incollection{Brownbridge1985,
+year={1985},
+booktitle={Functional Programming Languages and Computer Architecture},
+volume={201},
+series={Lecture Notes in Computer Science},
+editor={Jouannaud, Jean-Pierre},
+title={Cyclic reference counting for combinator machines},
+author={Brownbridge, D.R.},
+pages={273-288},
+}
+
+@article{Roy:1998,
+ author = {Roy, P. and Seshadri, S. and Silberschatz, A. and Sudarshan, S. and Ashwin, S.},
+ title = {Garbage collection in object-oriented databases using transactional cyclic reference counting},
+ journal = {The VLDB Journal},
+ volume = {7},
+ number = {3},
+ year = {1998},
+ pages = {179--193},
+ numpages = {15},
+ acmid = {765534},
+ publisher = {Springer-Verlag New York, Inc.},
+ address = {Secaucus, NJ, USA},
+}
+
+
+
+
+@MASTERSTHESIS{Salkild1987,
+  AUTHOR =       {Salkild, J.D.},
+  TITLE =        {Implementation and Analysis of two Reference Counting Algorithms},
+  SCHOOL =       {University College},
+  YEAR =         {1987},
+  type =         {Master Thesis},
+  address =      {London},
+}
+
+@UNPUBLISHED{Hughes1987,
+  AUTHOR =       {Hughes, R.J.M.},
+  TITLE =        {Managing reduction graphs with reference counts},
+  NOTE =         {Departmental Research Report CSC/87/R2},
+  year =         {1987},
+  month =        {March},
+  source =       {University of Glasgow},
+}
+
+@book{Pepels1988,
+  title={A Cyclic Reference Counting Algorithm and Its Proof},
+  author={Pepels, E.J.H. and Plasmeijer, M.J. and van Eekelen, C.J.D. and Eekelen, M.C.J.D.},
+  series={Internal report 88-10},
+  year={1988},
+  publisher={Department of Informatics, Faculty of Science, University of Nijmegen},
+}
+
+@article{Axford1990,
+author = {Axford, T. H.},
+title = {Reference Counting of Cyclic Graphs for Functional Programs},
+volume = {33},
+number = {5},
+pages = {466-470},
+year = {1990},
+abstract ={A simple method of reference counting applicable to graphs of functional language programs is described. The graph contains strong and weak pointers, but only the strong pointers are counted in the reference counts and by the graph deletion algorithms.It is shown that graphs of functional programs can be constructed in such a way that the sub-graphs got by removing all weak pointers is connected and acyclic. The weak pointers are used only for those recursive references which create cycles in an otherwise acyclic graph. Explicit recursive definitions of functions and data structures may be represented in the graph.The usual graph reduction rules can be implemented so that they do not destroy the required properties of the graph: the sub-graph of strong pointers always remains connected and acyclic. Thus, simple reference counting can be used safely with cyclic graphs of functional programsThis method of storage management has the advantage that is incurs little overhead in either storage space or execution time of beta reduction. Nor is there any excessive increase in the complexity of the algorithm needed for graph reduction. It is less suitable, however, for combinator and supercombinator reduction.},
+journal = {The Computer Journal}
+}
+
+@article{Friedman1979,
+  author    = {Daniel P. Friedman and
+               David S. Wise},
+  title     = {Reference Counting Can Manage the Circular Environments
+               of Mutual Recursion},
+  journal   = {Inf. Process. Lett.},
+  volume    = {8},
+  number    = {1},
+  year      = {1979},
+  pages     = {41-45},
+}
+
+@book{Jones1996,
+ author = {Jones, Richard and Lins, Rafael},
+ title = {Garbage collection: algorithms for automatic dynamic memory management},
+ year = {1996},
+ isbn = {0-471-94148-4},
+ publisher = {John Wiley \& Sons, Inc.},
+ address = {New York, NY, USA},
+}
+
+@book{Jones2011,
+ author = {Jones, Richard and Hosking, Antony and Moss, Eliot},
+ title = {The Garbage Collection Handbook: The Art of Automatic Memory Management},
+ year = {2011},
+ isbn = {1420082795, 9781420082791},
+ edition = {1st},
+ publisher = {Chapman \& Hall/CRC},
+}
+
+
+@incollection{Lins2006,
+year={2006},
+booktitle={Graph Transformations},
+volume={4178},
+series={Lecture Notes in Computer Science},
+editor={Corradini, Andrea and Ehrig, Hartmut and Montanari, Ugo and Ribeiro, Leila and Rozenberg, Grzegorz},
+title={New Algorithms and Applications of Cyclic Reference Counting},
+keywords={cyclic graphs; reference counting; webpage management; process management},
+author={Lins, Rafael Dueire},
+pages={15-29},
+}
+
+@article{Lins2008,
+title = "Cyclic reference counting",
+journal = "Inf. Process. Lett.",
+volume = "109",
+number = "1",
+pages = "71 - 78",
+year = "2008",
+note = "",
+author = "Rafael Dueire Lins",
+}
+
+@article{Abdullahi1998,
+ author = {Abdullahi, Saleh E. and Ringwood, Graem A.},
+ title = {Garbage collecting the Internet: a survey of distributed garbage collection},
+ journal = {ACM Comput. Surv.},
+ volume = {30},
+ number = {3},
+ year = {1998},
+ pages = {330--373},
+ numpages = {44},
+ keywords = {automatic storage reclamation, distributed, distributed file systems, distributed memories, distributed object-oriented management, memory management, network communication, object-oriented databases, reference counting},
+}
+
+@article{Paz2007,
+ author = {Paz, Harel and Bacon, David F. and Kolodner, Elliot K. and Petrank, Erez and Rajan, V. T.},
+ title = {An efficient on-the-fly cycle collection},
+ journal = {ACM Trans. Program. Lang. Syst.},
+ volume = {29},
+ number = {4},
+ year = {2007},
+ articleno = {20},
+ keywords = {Programming languages, concurrent cycle collection, garbage collection, memory management, reference counting, runtime systems},
+}
+
+@inproceedings{Plainfosse1995,
+ author = {Plainfoss{\'e}, David and Shapiro, Marc},
+ title = {A Survey of Distributed Garbage Collection Techniques},
+ booktitle = {Proceedings of the International Workshop on Memory Management (IWMM)},
+ year = {1995},
+ pages = {211--249},
+ numpages = {39},
+}
+
+@MISC{Chase1987,
+    author = {David R. Chase},
+    title = {Brief Survey of Garbage Collection Algorithms},
+    year = {1987},
+}
+
+@inproceedings{Wilson1992,
+ author = {Wilson, Paul R.},
+ title = {Uniprocessor Garbage Collection Techniques},
+ booktitle = {IWMM},
+ year = {1992},
+ pages = {1--42},
+ numpages = {42},
+}
+
+@inproceedings{Bacon2001,
+ author = {Bacon, David F. and Rajan, V. T.},
+ title = {Concurrent Cycle Collection in Reference Counted Systems},
+ booktitle = {ECOOP},
+ year = {2001},
+ pages = {207--235},
+ numpages = {29},
+}
+
+@article{Collins1960,
+ author = {Collins, George E.},
+ title = {A method for overlapping and erasure of lists},
+ journal = {Commun. ACM},
+ volume = {3},
+ number = {12},
+ year = {1960},
+ pages = {655--657},
+ numpages = {3},
+}
+
+@article{McCarthy1960,
+ author = {McCarthy, John},
+ title = {Recursive functions of symbolic expressions and their computation by machine, Part I},
+ journal = {Commun. ACM},
+ volume = {3},
+ number = {4},
+ year = {1960},
+ pages = {184--195},
+ numpages = {12},
+}
+
+@article{Levanoni2006,
+ author = {Levanoni, Yossi and Petrank, Erez},
+ title = {An on-the-fly reference-counting garbage collector for java},
+ journal = {ACM Trans. Program. Lang. Syst.},
+ volume = {28},
+ number = {1},
+ year = {2006},
+ pages = {1--69},
+ numpages = {69},
+ keywords = {Programming languages, garbage collection, memory management, reference-counting},
+}
+
+@article{McBeth1963,
+ author = {McBeth, J. Harold},
+ title = {Letters to the editor: on the reference counter method},
+ journal = {Commun. ACM},
+ volume = {6},
+ number = {9},
+ year = {1963},
+ pages = {575},
+}
+
+@article{Bobrow1980,
+ author = {Bobrow, Daniel G.},
+ title = {Managing Reentrant Structures Using Reference Counts},
+ journal = {ACM Trans. Program. Lang. Syst.},
+ volume = {2},
+ number = {3},
+ year = {1980},
+ pages = {269--273},
+ numpages = {5},
+}
+
+@inproceedings{Caromel2007,
+ author = {Caromel, Denis and Chazarain, Guillaume and Henrio, Ludovic},
+ title = {Garbage collecting the grid: a complete DGC for activities},
+ booktitle = {Proceedings of the ACM/IFIP/USENIX 2007 International Conference on Middleware (Middleware)},
+ year = {2007},
+ location = {Newport Beach, California},
+ pages = {164--183},
+ numpages = {20},
+ keywords = {cycle detection, distributed garbage collection, grid computing},
+}
+
+@article{Cohen1967,
+year={1967},
+journal={BIT Numerical Mathematics},
+volume={7},
+number={1},
+title={Remarks on garbage collection using a two-level storage},
+publisher={Kluwer Academic Publishers},
+keywords={Storage administration; compiler; list},
+author={Cohen, Jacques and Trilling, Laurent},
+pages={22-30},
+language={English},
+}
+
+@incollection{Bevan1987,
+year={1987},
+booktitle={PARLE Parallel Architectures and Languages Europe},
+volume={259},
+series={Lecture Notes in Computer Science},
+editor={Bakker, J.W. and Nijman, A.J. and Treleaven, P.C.},
+title={Distributed garbage collection using reference counting},
+author={Bevan, DI},
+pages={176-187}
+}
+
+@inproceedings{Shapiro1999,
+ author = {Shapiro, Marc and Fessant, Fabrice Le and Ferreira, Paulo},
+ title = {Recent Advances in Distributed Garbage Collection},
+ booktitle = {Advances in Distributed Systems, Advanced Distributed Computing: From Algorithms to Systems},
+ year = {1999},
+ pages = {104--126},
+ numpages = {23},
+}
+
+@article{Kafura1995,
+ author = {Kafura, Dennis and Mukherji, Manibrata and Washabaugh, Douglas M.},
+ title = {Concurrent and Distributed Garbage Collection of Active Objects},
+ journal = {IEEE Trans. Parallel Distrib. Syst.},
+ volume = {6},
+ number = {4},
+ year = {1995},
+ pages = {337--350},
+ numpages = {14},
+}
+
+@article{LeFessant1998,
+ author = {Le Fessant, Fabrice and Piumarta, Ian and Shapiro, Marc},
+ title = {An implementation of complete, asynchronous, distributed garbage collection},
+ journal = {SIGPLAN Not.},
+ volume = {33},
+ number = {5},
+ year = {1998},
+ pages = {152--161},
+ numpages = {10},
+ keywords = {distributed object systems, garbage collection, reference tracking, storage management},
+}
+
+@inproceedings{Zigman2000,
+ author = {Zigman, John N. and Blackburn, Stephen and Moss, J. Eliot B.},
+ title = {TMOS: A Transactional Garbage Collector},
+ booktitle = {Revised Papers from the 9th International Workshop on Persistent Object Systems(POS)},
+ year = {2001},
+ pages = {138--156},
+ numpages = {19},
+}
+
+@article{Blackburn2001,
+ author = {Blackburn, Stephen M. and Hudson, Richard L. and Morrison, Ron and Moss, J. Eliot B. and Munro, David S. and Zigman, John},
+ title = {Starting with termination: a methodology for building distributed garbage collection algorithms},
+ journal = {Aust. Comput. Sci. Commun.},
+ volume = {23},
+ number = {1},
+ year = {2001},
+ pages = {20--28},
+ numpages = {9},
+}
+
+@inproceedings{McGachey2008,
+ author = {McGachey, Phil and Adl-Tabatabai, Ali-Reza and Hudson, Richard L. and Menon, Vijay and Saha, Bratin and Shpeisman, Tatiana},
+ title = {Concurrent GC leveraging transactional memory},
+ booktitle = {PPoPP},
+ year = {2008},
+ location = {Salt Lake City, UT, USA},
+ pages = {217--226},
+ numpages = {10},
+ keywords = {compiler optimizations, concurrent garbage collection, strong atomicity, transactional integrity, transactional memory, virtual machines},
+}
+
+@article{Huelsbergen1998,
+ author = {Huelsbergen, Lorenz and Winterbottom, Phil},
+ title = {Very concurrent mark-\&-sweep garbage collection without fine-grain synchronization},
+ journal = {SIGPLAN Not.},
+ volume = {34},
+ number = {3},
+ year = {1998},
+ pages = {166--175},
+ numpages = {10},
+}
+
+@article{Derbyshire1990,
+ author = {Derbyshire, Margaret H.},
+ title = {Mark scan garbage collection on a distributed architecture},
+ journal = {Lisp Symb. Comput.},
+ volume = {3},
+ number = {2},
+ year = {1990},
+ pages = {135--170},
+ numpages = {36},
+}
+
+@article{Barabash2005,
+ author = {Barabash, Katherine and Ben-Yitzhak, Ori and Goft, Irit and Kolodner, Elliot K. and Leikehman, Victor and Ossia, Yoav and Owshanko, Avi and Petrank, Erez},
+ title = {A parallel, incremental, mostly concurrent garbage collector for servers},
+ journal = {ACM Trans. Program. Lang. Syst.},
+ volume = {27},
+ number = {6},
+ year = {2005},
+ pages = {1097--1146},
+ numpages = {50},
+ keywords = {Garbage collection, JVM, concurrent garbage collection},
+}
+
+@article{Pizlo2008,
+ author = {Pizlo, Filip and Petrank, Erez and Steensgaard, Bjarne},
+ title = {A study of concurrent real-time garbage collectors},
+ journal = {SIGPLAN Not.},
+ volume = {43},
+ number = {6},
+ year = {2008},
+ pages = {33--44},
+ numpages = {12},
+ keywords = {concurrent garbage collection, garbage collection, lock-free computation, memory management, real-time},
+}
+
+@inproceedings{Maheshwari1997,
+ author = {Maheshwari, Umesh and Liskov, Barbara},
+ title = {Collecting distributed garbage cycles by back tracing},
+ booktitle = {Proceedings of the sixteenth annual ACM symposium on Principles of distributed computing (PODC)},
+ year = {1997},
+ location = {Santa Barbara, California, USA},
+ pages = {239--248},
+ numpages = {10},
+}
+
+@inproceedings{Rodrigues1998,
+ author = {Rodrigues, Helena and Jones, Richard},
+ title = {Cyclic Distributed Garbage Collection with Group Merger},
+ booktitle = {Proceedings of the 12th European Conference on Object-Oriented Programming (ECOOP)},
+ year = {1998},
+ pages = {260--284},
+ numpages = {25},
+}
+
+@misc{bejar1996,
+  author = {Arturo Bejar},
+  title = {The {Electric Communities} Distributed Garbage Collector},
+  year = 1996,
+  note = {{\tt http://www.crockford.com/ec/dgc.html}},
+  url = "http://www.crockford.com/ec/dgc.html",
+}
+
+@inproceedings{Ryu2003,
+ author = {Ryu, Sung-Wook and Im, Eul Gyu and Neuman, B. Clifford},
+ title = {Distributed Garbage Collection by Timeouts and Backward Inquiry},
+ booktitle = {Proceedings of the 27th Annual International Conference on Computer Software and Applications (COMPSAC)},
+ year = {2003},
+ pages = {426--432},
+ keywords = {Distributed Garbage Collection, Distributedobjects, Cyclic Garbage, Timeouts, Back-Tracing},
+}
+
+@MISC{terracota,
+  note = {{\tt http://terracotta.org/documentation/}},
+  source = {http://terracotta.org/documentation/bigmemorymax/best-practices},
+}
+
+@inproceedings{Veiga2005,
+ author = {Veiga, Luis and Ferreira, Paulo},
+ title = {Asynchronous Complete Distributed Garbage Collection},
+ booktitle = {IPDPS},
+ year = {2005},
+ pages = {24.1--24.10},
+}
+
+@inproceedings{Wang2006,
+ author = {Wang, Wei-Jen and Varela, Carlos A.},
+ title = {Distributed garbage collection for mobile actor systems: the pseudo root approach},
+ booktitle = {Proceedings of the First international conference on Advances in Grid and Pervasive Computing (GPC)},
+ year = {2006},
+ location = {Taichung, Taiwan},
+ pages = {360--372},
+ numpages = {13},
+}
+
+@article{Maheshwari1997b,
+year={1997},
+journal={Distrib. Comput.},
+volume={10},
+number={2},
+title={Collecting cyclic distributed garbage by controlled migration},
+publisher={Springer-Verlag},
+keywords={Key words: Distributed garbage collection; Cyclic garbage; Migration},
+author={Maheshwari, Umesh and Liskov, Barbara},
+pages={79-86},
+language={English},
+}
+
+@inproceedings{Wang2010,
+ author = {Wang, Wei-Jen and Varela, Carlos and Hsu, Fu-Hau and Tang, Cheng-Hsien},
+ title = {Actor garbage collection using vertex-preserving actor-to-object graph transformations},
+ booktitle = {GPC},
+ year = {2010},
+ location = {Hualien, Taiwan},
+ pages = {244--255},
+ numpages = {12},
+ keywords = {active objects, actors, garbage collection, program transformation},
+}
+
+@article{Shavit1997,
+year={1997},
+journal={Distrib. Comput.},
+volume={10},
+number={2},
+title={Software transactional memory},
+keywords={Key words: Multiprocessor synchronization; Lock-free; Transactional memory; Distributed shared memory},
+author={Shavit, Nir and Touitou, Dan},
+pages={99-116},
+language={English}
+}
+
+@inproceedings{Schoettner2006,
+ author = {Schoettner, M. and Goeckelmann, R. and Frenz, S. and Fakler, M. and Schulthess, P.},
+ title = {Incremental distributed garbage collection using reverse reference tracking},
+ booktitle = {Proceedings of the 12th international conference on Parallel Processing (Euro-Par)},
+ year = {2006},
+ location = {Dresden, Germany},
+ pages = {571--581},
+ numpages = {11},
+}
+
+
+@inproceedings{kaiser2009parallex,
+  title={Parallex an advanced parallel execution model for scaling-impaired applications},
+  author={Kaiser, Hartmut and Brodowicz, Maciek and Sterling, Thomas},
+  booktitle={ICPPW},
+  pages={394--401},
+  year={2009},
+}
+
+@book{kale1993charm++,
+  title={CHARM++: a portable concurrent object oriented system based on C++},
+  author={Kale, Laxmikant V and Krishnan, Sanjeev},
+  volume={28},
+  number={10},
+  year={1993},
+}
+
+@inproceedings{lauderdale2012towards,
+  title={Towards a codelet-based runtime for exascale computing: position paper},
+  author={Lauderdale, Christopher and Khan, Rishi},
+  booktitle={EXADAPT},
+  pages={21--26},
+  year={2012},
+}
+
+@inproceedings{berzins2010uintah,
+  title={Uintah: a scalable framework for hazard analysis},
+  author={Berzins, Martin and Luitjens, Justin and Meng, Qingyu and Harman, Todd and Wight, Charles A and Peterson, Joseph R},
+  booktitle={TG},
+  pages={3.1--3.8},
+  year={2010},
+}
+
+@inproceedings{nieplocha1994global,
+  title={Global Arrays: A portable shared-memory programming model for distributed memory computers},
+  author={Nieplocha, Jaroslaw and Harrison, Robert J and Littlefield, Richard J},
+  booktitle={SC},
+  pages={340--349},
+  year={1994},
+}
+
+@article{Printezis:2000,
+ author = {Printezis, Tony and Detlefs, David},
+ title = {A generational mostly-concurrent garbage collector},
+ journal = {SIGPLAN Not.},
+ volume = {36},
+ number = {1},
+ year = {2000},
+ pages = {143--154},
+ numpages = {12},
+ acmid = {362480},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+}
+
+@MISC{refer,
+  howpublished = {\url{http://docs.oracle.com/javase/1.4.2/docs/api/java/lang/ref/Reference.html}},
+}
+
+@MISC{realtime,
+  howpublished = {\url{http://www.ibm.com/developerworks/java/library/j-rtj4/index.html}},
+}
+
+@MISC{arc,
+  howpublished = {\url{https://developer.apple.com/library/ios/documentation/cocoa/conceptual/ProgrammingWithObjectiveC/ProgrammingWithObjectiveC.pdf}},
+}
+
+
+@article{Bacon2003,
+ author = {Bacon, David F. and Cheng, Perry and Rajan, V. T.},
+ title = {A real-time garbage collector with low overhead and consistent utilization},
+ journal = {SIGPLAN Not.},
+ volume = {38},
+ number = {1},
+ year = {2003},
+ pages = {285--298},
+ numpages = {14},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {defragmentation, read barrier, real-time scheduling, utilization},
+}
+
+
+
+@article{Sankaran:1994,
+ author = {Sankaran, Nandakumar},
+ title = {A bibliography on garbage collection and related topics},
+ journal = {SIGPLAN Not.},
+ volume = {29},
+ number = {9},
+ year = {1994},
+ issn = {0362-1340},
+ pages = {149--158},
+ numpages = {10},
+}
+
+
+@article{Lins:1992:CRC,
+ author = {Lins, Rafael D.},
+ title = {Cyclic reference counting with lazy mark-scan},
+ journal = {Inf. Process. Lett.},
+ volume = {44},
+ number = {4},
+ year = {1992},
+ pages = {215--220},
+ numpages = {6},
+ acmid = {152563},
+ publisher = {Elsevier North-Holland, Inc.},
+ address = {Amsterdam, The Netherlands, The Netherlands},
+ keywords = {compilers, functional programming, garbage collection},
+}
+
+@article{Lins:2002:EAC,
+ author = {Lins, Rafael Dueire},
+ title = {An efficient algorithm for cyclic reference counting},
+ journal = {Inf. Process. Lett.},
+ volume = {83},
+ number = {3},
+ year = {2002},
+ pages = {145--150},
+ numpages = {6},
+ acmid = {605119},
+ publisher = {Elsevier North-Holland, Inc.},
+ address = {Amsterdam, The Netherlands, The Netherlands},
+ keywords = {cyclic graphs, garbage collection, memory management, reference counting},
+}
+
+
+
+
+@article{Bacon:2001:JWC,
+ author = {Bacon, David F. and Attanasio, Clement R. and Lee, Han B. and Rajan, V. T. and Smith, Stephen},
+ title = {Java without the coffee breaks: a nonintrusive multiprocessor garbage collector},
+ journal = {SIGPLAN Not.},
+ volume = {36},
+ number = {5},
+ year = {2001},
+ pages = {92--103},
+ numpages = {12},
+ acmid = {378819},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+}
+
+@misc{url:refimpl,
+        url = {https://github.com/stevenrbrandt/MultiThreadBrownbridge},
+}
+
+@inproceedings{Shahriyar:2012,
+ author = {Shahriyar, Rifat and Blackburn, Stephen M. and Frampton, Daniel},
+ title = {Down for the Count?  Getting Reference Counting Back in the Ring},
+ booktitle = {ISMM},
+ year = {2012},
+ location = {Beijing, China},
+ pages = {73--84},
+ numpages = {12},
+}
+
+@PHDTHESIS{Frampton2010,
+  AUTHOR =       {D. Frampton},
+  TITLE =        {Garbage Collection and the Case for High-level Low- level Programming},
+  SCHOOL =       {Australian National University},
+  YEAR =         {2010},
+  month =        {June},
+}
+
+@article {Christopher1984,
+author = {Christopher, Thomas W.},
+title = {Reference count garbage collection},
+journal = {Software: Practice and Experience},
+volume = {14},
+number = {6},
+publisher = {John Wiley & Sons, Ltd.},
+pages = {503--507},
+keywords = {List processing, Garbage collection, Reference counts},
+year = {1984},
+}
