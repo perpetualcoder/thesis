@@ -1,0 +1,87 @@
+% Expression Trees
+
+\newcommand{\Fun}[0]{\mathop{\mbox{\rm Fun}}}
+\newcommand{\Const}[0]{\mathop{\mbox{\rm Const}}}
+\newcommand{\BinOp}[0]{\mathop{\mbox{\rm BinOp}}}
+\newcommand{\Sum}[0]{\mathop{\mbox{\rm Sum}}}
+\newcommand{\Assign}[0]{\mathop{\mbox{\rm Assign}}}
+\newcommand{\Output}[0]{\mathop{\mbox{\rm Output}}}
+\newcommand{\Array}[0]{\mathop{\mbox{\rm Array}}}
+
+% For loops
+
+\newcommand{\for}[1]{for #1\\ $\left[\begin{tabular}{l}}
+%\newcommand{\nfor}{\end{tabular}\right.$}
+\newcommand{\nfor}{\end{tabular}\right.$\hspace*{-7.6pt}}
+
+
+% Other definitions
+
+\newcommand{\parent}[0]{\mathop{\mbox{\em parent}}}
+\newcommand{\subtree}[0]{\mathop{\mbox{\em subtree}}}
+\newcommand{\indices}[0]{\mathop{\mbox{\em indices}}}
+\newcommand{\sumindices}[0]{\mathop{\mbox{\em sumindices}}}
+
+\newcommand{\scope}[0]{\mathop{\mbox{\em scope}}}
+\newcommand{\set}[0]{\mathop{\mbox{\em set}}}
+\newcommand{\rank}[0]{\mathop{\mbox{\em rank}}}
+\newcommand{\prefix}[0]{\mathop{\mbox{\em prefix}}}
+\newcommand{\legal}[0]{\mathop{\mbox{\em legal}}}
+\newcommand{\maxFusion}[0]{\mathop{\mbox{\em maxFusion}}}
+\newcommand{\extendNesting}[0]{\mathop{\mbox{\em extendNesting}}}
+\newcommand{\mergeNesting}[0]{\mathop{\mbox{\em mergeNesting}}}
+
+\newcommand{\mhi}[0]{\mbox{\em hi}}
+\newcommand{\mlo}[0]{\mbox{\em lo}}
+\newcommand{\hi}[0]{$\mbox{\em hi}$}
+\newcommand{\lo}[0]{$\mbox{\em lo}$}
+\newcommand{\hilo}{$\mbox{\em hi}-\mbox{\em lo}$}
+\newcommand{\hiC}[0]{$\mbox{\em hiC}$}
+\newcommand{\loC}[0]{$\mbox{\em loC}$}
+\newcommand{\frags}[0]{$\mbox{\em frags}$}
+\newcommand{\fset}[0]{$\mbox{\em fset}$}
+\newcommand{\fhi}[0]{$\mbox{\em fhi}$}
+\newcommand{\flo}[0]{$\mbox{\em flo}$}
+
+
+% Solution Trees
+
+\newcommand{\Sol}[0]{\mathop{\mbox{\rm S}}}
+\newcommand{\Leaf}[0]{\mathop{\mbox{\rm Leaf}}}
+\newcommand{\Unary}[0]{\mathop{\mbox{\rm Unary}}}
+\newcommand{\Binary}[0]{\mathop{\mbox{\rm Binary}}}
+\newcommand{\Extended}[0]{\mathop{\mbox{\rm Extended}}}
+\newcommand{\Reduced}[0]{\mathop{\mbox{\rm Reduced}}}
+
+\newcommand{\any}{$\langle*\rangle$}
+
+% The following definition should eventually be deleted:
+
+% \newcommand{\solns}[0]{\mathop{\mbox{\em solns}}}
+% \newcommand{\nesting}[0]{\mathop{\mbox{\em nesting}}}
+% \newcommand{\fusion}[0]{\mathop{\mbox{\em fusion}}}
+% \newcommand{\mem}[0]{\mathop{\mbox{\em mem}}}
+% \newcommand{\srcOne}[0]{\mathop{\mbox{\em src1}}}
+% \newcommand{\srcTwo}[0]{\mathop{\mbox{\em src2}}}
+% \newcommand{\childOne}[0]{\mathop{\mbox{\em child1}}}
+% \newcommand{\childTwo}[0]{\mathop{\mbox{\em child2}}}
+
+\newcommand{\Root}[0]{\mathop{\mbox{\em root}}}
+\newcommand{\optfusion}[0]{\mathop{\mbox{\em optfusion}}}
+
+
+% Definitions and Theorems
+
+%\newdef{definition}{Definition}[section]
+%\newdef{subdefinition}{Definition}[subsection]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{subdefinition}{Definition}[subsection]
+
+
+% Abbreviations for Example
+
+\newcommand{\F}[1]{$\langle #1 \rangle$}
+\newcommand{\opt}[0]{$\surd$}
+\newcommand{\E}[0]{E\ }
+\newcommand{\R}[1]{R $\{#1\}$}
