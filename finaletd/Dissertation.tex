@@ -42,6 +42,7 @@
 %\usepackage{algorithmic}
 \usepackage{listings}
 \usepackage{pgfplots}
+\usepackage{multicol}
 %\usepackage[ruled]{algorithm2e}
 %\usepackage[noend]{algpseudocode}
 
@@ -420,13 +421,20 @@ belowcaptionskip=0pt,
 
 \end{comment}
 
- 
+\chapter{Introduction}
+\chapter{Preliminaries}
+\chapter{BrownBridge Technique}
+\chapter {Shared Memory Garbage Collection}
+\chapter {Shard Memory Single Collector Garbage Collection} 
   \chapter{Shared Memory Multi-processor Garbage Collection}
  \label{shared}
    \input{paper}
+\chapter{Distributed Memory Garbage Collection}
+\chapter{Distributed Memory Single Collector Garbage Collection}
   \chapter{Distributed Memory Multi-collector Garbage Collection}
      \label{distributed}
      \input{newpaper}
+\chapter{Conclusion}
 \begin{comment}
  \chapter{Document Retrieval with Forbidden Extension}
  \label{forbidext}
@@ -471,7 +479,7 @@ belowcaptionskip=0pt,
 \begin{singlespace}
 \addcontentsline{toc}{chapter}{References}
 \bibliographystyle{plain}
-%\bibliography{bib}
+\bibliography{paper}
 \end{singlespace}
 
 %\appendix

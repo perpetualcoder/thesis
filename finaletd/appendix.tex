@@ -60,7 +60,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 \scriptsize
 \caption{Single Collector Algorithm}
 \label{Node Automaton}
-%\begin{multicols}{2}
+\begin{multicols}{2}
 \begin{algorithmic}[1]
 \Procedure{OnMsgReceive}{}
 \If{msg type = PH}
@@ -156,7 +156,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 \EndIf
 \EndProcedure
 \end{algorithmic}
-%\end{multicols}
+\end{multicols}
 \end{algorithm}	
 
 
@@ -166,7 +166,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 \caption{Edge Deletion}
 \label{Link Deletion}
 \scriptsize
-%\begin{multicols}{2}
+\begin{multicols}{2}
 \begin{algorithmic}[1]
 \Procedure{OnEdgeDeletion}{}
 \State Decrement SC, WC, or PC
@@ -201,7 +201,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 	\EndIf
 \EndProcedure
 \end{algorithmic}
-%\end{multicols}
+\end{multicols}
 \end{algorithm}	
 
 	
@@ -209,7 +209,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 \caption{On receiving Phantomize messge}
 \label{Phantom message received}
 \scriptsize
-%\begin{multicols}{2}
+\begin{multicols}{2}
 \begin{algorithmic}[1]
 \Procedure{OnPhantomizeReceive}{}
 \State Decrement SC/WC and Increment PC.
@@ -256,7 +256,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 \EndIf
 \EndProcedure
 \end{algorithmic}
-%\end{multicols}
+\end{multicols}
 \end{algorithm}	
 	
 	
@@ -264,7 +264,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 \caption{On receiving Return message}
 \label{ Done message received}
 \scriptsize
-%\begin{multicols}{2}
+\begin{multicols}{2}
 \begin{algorithmic}[1]
 \Procedure{OnReturnReceive}{}
 \If{msg.SRO = true}
@@ -355,7 +355,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 \EndIf
 \EndProcedure
 \end{algorithmic}
-%\end{multicols}
+\end{multicols}
 \end{algorithm}	
 
 
@@ -364,7 +364,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 \caption{On receiving Build message}
 \label{Build message received}
 \scriptsize
-%\begin{multicols}{2}
+\begin{multicols}{2}
 \begin{algorithmic}[1]
 \Procedure{OnBuildReceive}{}
 \State Increment SC/WC, and Decrement PC.
@@ -429,7 +429,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 \EndIf
 \EndProcedure
 \end{algorithmic}
-%\end{multicols}
+\end{multicols}
 \end{algorithm}	
 
 
@@ -437,7 +437,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 \caption{On receiving Recovery message}
 \label{Recovery message received}
 \scriptsize
-%\begin{multicols}{2}
+\begin{multicols}{2}
 \begin{algorithmic}[1]
 \Procedure{OnRecoveryReceive}{}
 \If{S $>$ 0}
@@ -507,7 +507,7 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 \EndIf
 \EndProcedure
 \end{algorithmic}
-%\end{multicols}
+\end{multicols}
 \end{algorithm}	
 
 \subsection{Appendix of proofs}
