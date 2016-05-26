@@ -1,4 +1,13 @@
 \section{Memory Management}
+Most programming languages uses stack and heap memory to organize the memory consumption of an application. Heap memory is used especially for dynamic allocated objects. During call stack unwinding, all the memory allocated in each frame is deleted there by automatically deleting unwanted memory in the frame. The idea of heap memory is also to enhance the life of the data. So a call stack unwinding does not delete all the memory allocated in the frame when it is popped. So this creates the necessity for developers to identify when the data has to be deleted and reclaim memory for reuse. 
+
+Although memory management is broader term, in the context of this thesis, it refers to managing heap memory. There are two solutions to memory management. First, being manual memory management where the developers has to identify the life of the data / object and delete them. Another possibility, is to run a automated program that identifies all the unwanted data and delete them. The later is usually referred as automatic memory management or garbage collection. Programming languages that include garbage collection program in their runtime systems are referred as managed runtime systems. Managed runtime systems like JVM include a wide range of garbage collection programs to efficiently manage heap memory.
+
+Data residing in the heap memory is only accesible by the pointers in the stack memory and static memory. These pointers are also called as roots. 
+
 \section{Abstract Graph Model}
+Every block of memory that represents a data is generally referred as object in object oriented programming langauges. In this thesis, we abstract the environment into graph theoretic concepts. 
+Every object allocated in the heap can be mapped in to nodes. Nodes are represent by circle in the graph. An object might contain references to other objects in the heaps. These references are unidirectional references. These references can be modeled as directed edges in the graph. So the nodes have arc followed by an arrow. The directional edge represent which objects stores the references. The arc ending with no arrow saves the references of the node with arrow. So the relationship among objects in the heap can be modeled in to nodes and edges. Roots in the stack memory and static memory can be modeled in to separate nodes or a single node. The unique property of the root node(s) (R) is/are they never contain an incoming edge. The roots are inaccesible by the objects in the heap or by other roots. So this creates a unique property among the nodes. So R only contains directional edges that points to other nodes. 
+
 \section{Properties of Garbage Collection}
 \section{Types of Garbage Collection}
