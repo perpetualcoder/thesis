@@ -346,9 +346,7 @@ belowcaptionskip=0pt,
 \pagebreak
 
 
- \pagebreak
- \begin{doublespace}
-% \input{tex/abstract}
+ 
 
 \renewcommand{\cftchapdotsep}{\cftdotsep}
 
@@ -364,7 +362,9 @@ belowcaptionskip=0pt,
 \newpage
 
  \input{dedication}
- 
+ \pagebreak
+ \begin{doublespace}
+ 	\input{mainabstract}
  \newpage
    \begin{doublespace}
    \input{acknowledge}
