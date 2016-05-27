@@ -9,6 +9,79 @@ Data residing in the heap memory is only accesible by the pointers in the stack 
 \end{comment}
 
 \section{Abstract Graph Model}
+\paragraph{Basic Reference Graph:}
+We model the relationship among various objects and pointers in memory through a directed graph $G = (V, E)$, which we call a {\it reference graph}.
+The graph $G$ has a special node $R$, which we call the {\it root}. Node $R$
+represents
+global and stack pointer variables, and
+thus does not have any incoming edges.
+Each node in $G$ is assumed to contain a unique ID. % to distinguish it within
+%$G$. (For example, when each node of $G$ maps to a unique site in $H$, then ID of the site in $H$ can be used for the ID of the node in $G$.)
+All adjacent nodes to a given node in $G$ are called $neighbors$, and denoted by $\Gamma$. The
+$\inneighbors$ of a node $x\in G$ can be defined as the set of nodes whose outgoing edges
+are incident on $x$, represented by $\Gamma_{in}(x)$. The $\outneighbors$ of $x$ can be defined as the set
+of nodes whose incoming edges originate on $x$, represented by $\Gamma_{out}(x)$.
+Note that each node $x\in G$ does not know $\Gamma_{in}(x)$ at any point in time.
+%This constraint
+%reduces memory complexity, thereby making
+%the algorithm more practical and scalable. \todo{remove preceding sentence?}
+
+\paragraph{Garbage Collection Problem:}
+All nodes in $G$ can be classified as either {\em live} (i.e., not garbage) or {\em dead} (i.e., garbage) based on a property called
+$reachability$. Live and dead nodes can be defined as below:
+
+
+%$Live(x)= \exists y \in V \mid Reachable(y, x)$
+
+%$Reachable(y, x) = x \in R \vee (Live(y) \wedge x \in \Gamma_{out}(y))$
+
+$Reachable(y,x) = x \in \Gamma_{\rm out}(y) \lor (x \in \Gamma_{\rm out}(z) \mid Reachable(y,z))$
+
+$Live(x) = Reachable(R,x)$
+
+$Dead(x) = \neg Live(x)$
+
+%From above definition, it is clearly that all root nodes are always reachable / live.
+We allow the live portion
+of $G$, denoted as $G'$, to be mutated while the algorithm is running, and we refer
+to the source of these mutations as the {\em Adversary.}
+The Adversary can create nodes and attach them to $G'$, create new edges between existing nodes of $G'$, or delete edges from $G'$. Moreover, the Adversary can perform multiple events (creation and deletion of edges)
+simultaneously. The Adversary, however, can never mutate the dead portion of the graph $G'' = G\backslash G'$.
+%Creation event represents creating directed
+%edges. An edge can be only created between two live nodes in $G$. To create a
+%node, an edge is created between a live node and non-existing node. During link
+%creation, if the node is not available, the requested node is created and a
+%directed edge is incident on newly created node. So the newly
+%created node is always reachable. Deletion happens only for edges. Adversary can
+%delete outgoing edge of a node $x$ only if $x$ is live . So $A$ cannot perform
+%any mutation on dead nodes. These constraints create the following principles /
+%axioms in the model.
+
+\begin{axiom}[Immutable Dead Node]
+	The Adversary cannot mutate a dead node.
+	\label{ax:immut}
+\end{axiom}
+
+\begin{axiom}[Node Creation]
+	All nodes are live when they are created by the Adversary.
+\end{axiom}
+
+From Axiom \ref{ax:immut}, it follows that a node that becomes dead will never
+become live again.
+%This property allows the problem to be solved in
+%finite time. \todo{remove preceding sentence}
+%The problem of distributed garbage collection can be modeled as
+%detecting all dead nodes in dynamic directed graph $G$.
+
+Each node experiencing deletion of an incoming edge has to determine whether it is still
+live. If a node detects that it is dead then it must delete itself from the
+graph $G$. %The problem of garbage collection is the process of
+%identifying dead nodes in $G$ and deleting them.
+
+\begin{definition}[Garbage Collection Problem]
+	%The problem of garbage collection is the process of
+	Identify the dead nodes in the reference graph $G$ and delete them.
+\end{definition}
 
 \begin{comment}
 Every block of memory that represents a data is generally referred as object in object oriented programming langauges. In this thesis, we abstract the environment into graph theoretic concepts. 
@@ -16,6 +89,10 @@ Every object allocated in the heap can be mapped in to nodes. Nodes are represen
 \end{comment}
 
 \section{Types of Garbage Collection}
+
+There are two main types of garbage collection : tracing and reference counting. Tracing collector traces all the nodes that are reachable from the root and mark the nodes in general to notify they are live. All nodes that are not marked after tracing entire graph are considered dead / garbage nodes and are deleted. Reference counting collectors keep track of number of incoming edges to a node. When a node reaches zero incoming edges, node is considered garbage and deleted. These two appraoches are fundamental technique to collect garbage. All garbage collection algorithm uses strictly one of these technique or both. These two techniques can be seen as duals of garbage collection.
+
+Pure reference counting algorithm which counts number of incoming edges to a node does not delete all garbage nodes. A simple cyclic garbage of nodes will have non zero count and will qualify as live nodes under pure reference counting rules. So cyclic reference counting algorithms that collect cyclic garbage use partial tracing technique. Our algorithms discussed in the thesis falls under hybrid collector that uses reference counting along with partial tracing to detect all garbage nodes in the graph.
 
 \section{Cyclic Graph}
 The attractive property of reference counting algorithm is localized computation and incremental approach. Mark Sweep algorithm innately requires synchronization and computing the garbage nodes globally. Although reference counting had attractive benefits, reference counting  suffered from fundamental problem of inability to detect all types of garbage especially cyclic garbage. Cyclic garbage are collection of nodes that creates a cycle. By reference counting principle, all the nodes in the graph contain non-zero reference count and hence the algorithm does not recognize the garbage. These cyclic garbage are very common. For a garbage collector to be complete, it is not enough to guarantee the safety property. Liveness property is crucial property to ensure the functional requirements of garbage collector. Brownbridge invented an idea to classify edges in the graph into two types namely : strong and weak. 
