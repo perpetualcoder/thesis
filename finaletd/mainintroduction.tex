@@ -1,7 +1,7 @@
 
 This chapter provides the background information regarding the problem discussed in the thesis. Section
 ~\ref{intro:gc} describes the fundamental idea behind necessity of garbage collection. Advanced readers can skip the section ~\ref{intro:gc}. Section ~\ref{intro:motv} discusses the advantages of the garbage collection and problem statement of the thesis. Section ~\ref{intro:contr} describes all the contributions of this thesis to solve the problem mentioned in section ~\ref{intro:motv}. Section ~\ref{intro:do} helps the readers to understand how the thesis is organized.
-\section{Garbage Collection}
+\section{Garbage paragraph}
 \label{intro:gc}
 All programming languages are designed to perform complex computations. Computation contain three main ingredients : Processing unit, algorithm, and memory. Processing unit aka processor is the unit which performs arithmetic, and logical operations required. Algorithm dictates sequence of operation to performed on the data to get the desired output. Algorithm implemented in a programming language is usually referred as program and collection of programs are called software. Memory saves the input, intermediate results and final output of the computation. In this thesis, we are more concerned with object oriented programming languages and object represent user defined dynamically allocated data. Developers write algorithms in a specific programming languages. Programming language organizes the memory consumed by the algorithm. Modern programming languages uses three different memory to organize it. They are stack, static and heap memory. Static memory contains all the global variables used by the program. Stack memory is used by the programming languages to manage static(fixed size) allocation of data along with scope of the data. Heap memory is used to manage the dynamically allocated objects. 
 
@@ -16,11 +16,11 @@ The main advantage of the garbage collections are
 	\item Double free bugs
 	\item Memory Leaks
 \end{enumerate}
-\subsection{Dangling Pointers}
+\paragraph{Dangling Pointers:}
 	Dangling pointers are those pointers where programmer deleted the object a pointer points to. So these pointers are very dangerous in nature as one does not know what the pointer is pointing to.
-\subsection{Double free bugs}
+\paragraph{Double free bugs:}
 	Double free bugs is problem when an objected allocated in the heap is deleted and programmer deletes the object again. The problem with this if a new object is allocated in the space and the delete is called, the new object is deleted without knowledge. This creates some dangling pointers.
-\subsection{memory leaks}
+\paragraph{memory leaks:}
 	The most important of all is that the object is allocated in the heap and it is not used. The unused object is not deleted and it consumes memory which could be reused for other objects.
 	
 The main objectives of this thesis are to design garbage collectors for shared and distributed memory systems. The garbage collectors are expected to satisfy the following properties
@@ -35,21 +35,21 @@ The main objectives of this thesis are to design garbage collectors for shared a
 	\item Completeness
 \end{enumerate}
 
-\subsection{Concurrent}
+\paragraph{Concurrent:}
 	Concurrent garbage collectors have negligible to zero pause time. As these type of collectors process heap along side application, application does not get locked and waiting for the garbage collector to finish processing.
-\subsection{Multi-collector Garbage Collection}
+\paragraph{Multi-collector Garbage :}
 	Multi-collector garbage collections are multiple independent garbage collectors that work independently on the heap to identify garabge. These collectors utilize multi-processors systems when there is lot of compute resources being under utilized.
-\subsection{Global Synchronization}
+\paragraph{Global Synchronization:}
 	When multi-collector garbage collectors are used, conventional solutions require global barrier among all the collectors to communicate and share the information to identify garbage objects and delete them. With no global synchronization, throughput of garbage collectors will be high.
-\subsection{Locality based garbage collection}
+\paragraph{Locality based garbage collection:}
 	Detecting garbage is a global predicate. Traditionally, popular methods of garbage collection algorithm involves computing garbage as global predicate. This requires scanning entire heap for better evaluating the predicate. If garbage object can be detected locally based on the a small set of object, then the garbage detection process can be parallelized.
-\subsection{Scalable}
+\paragraph{Scalable:}
 	With increase in the size of memory, conventional global garbage collection techniques will not scale with synchronization and scanning the entire heap(s). A garbage collection algorithm must be scalable to meet the future demands. Locality based garbage collection with no globally synchronized multi-collector mechanism is the way for scalability.
-\subsection{Promptness}
+\paragraph{Promptness:}
 	With global garbage collection, the cost of scanning entire heap often is very expensive. It comes with the cost that the garbage will not be collected until the scanning process starts. We require garbage collector that are prompt in collecting garbage as the heap(s) scanning might be expensive in huge distributed systems.
-\subsection{Safety}
+\paragraph{Safety:}
 	Safety property is the most crucial part of the problem. Every garbage collector must delete only garbage object. While most garbage collector in literature satisfy this property, there are some that cannot satisfy this property. This thesis requires garbage collector to be safety in the multi-collector environment which is challenging given that there is no global synchronization.
-\subsection{Completeness}
+\paragraph{Completeness:}
 	Completeness helps garbage collector to claim that it collects all garbage objects in the heap. Reference counting garbage collector is well known for incomplete garbage colletion due to their inability to collect cyclic garbage. This property is challenging as the locality based collectors usually use reference counting. Garbage collector with localized decision making guarantee completeness is necessary to make the collector highly adaptable to enhance the performance of the applications.
 \section{Contributions}
 \label{intro:contr}

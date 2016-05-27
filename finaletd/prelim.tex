@@ -1,3 +1,4 @@
+\begin{comment}
 \section{Memory Management}
 Most programming languages uses stack and heap memory to organize the memory consumption of an application. Heap memory is used especially for dynamic allocated objects. During call stack unwinding, all the memory allocated in each frame is deleted there by automatically deleting unwanted memory in the frame. The idea of heap memory is also to enhance the life of the data. So a call stack unwinding does not delete all the memory allocated in the frame when it is popped. So this creates the necessity for developers to identify when the data has to be deleted and reclaim memory for reuse. 
 
@@ -5,9 +6,22 @@ Although memory management is broader term, in the context of this thesis, it re
 
 Data residing in the heap memory is only accesible by the pointers in the stack memory and static memory. These pointers are also called as roots. 
 
+\end{comment}
+
 \section{Abstract Graph Model}
+
+\begin{comment}
 Every block of memory that represents a data is generally referred as object in object oriented programming langauges. In this thesis, we abstract the environment into graph theoretic concepts. 
 Every object allocated in the heap can be mapped in to nodes. Nodes are represent by circle in the graph. An object might contain references to other objects in the heaps. These references are unidirectional references. These references can be modeled as directed edges in the graph. So the nodes have arc followed by an arrow. The directional edge represent which objects stores the references. The arc ending with no arrow saves the references of the node with arrow. So the relationship among objects in the heap can be modeled in to nodes and edges. Roots in the stack memory and static memory can be modeled in to separate nodes or a single node. The unique property of the root node(s) (R) is/are they never contain an incoming edge. The roots are inaccesible by the objects in the heap or by other roots. So this creates a unique property among the nodes. So R only contains directional edges that points to other nodes. 
+\end{comment}
 
-\section{Properties of Garbage Collection}
 \section{Types of Garbage Collection}
+
+\section{Cyclic Graph}
+The attractive property of reference counting algorithm is localized computation and incremental approach. Mark Sweep algorithm innately requires synchronization and computing the garbage nodes globally. Although reference counting had attractive benefits, reference counting  suffered from fundamental problem of inability to detect all types of garbage especially cyclic garbage. Cyclic garbage are collection of nodes that creates a cycle. By reference counting principle, all the nodes in the graph contain non-zero reference count and hence the algorithm does not recognize the garbage. These cyclic garbage are very common. For a garbage collector to be complete, it is not enough to guarantee the safety property. Liveness property is crucial property to ensure the functional requirements of garbage collector. Brownbridge invented an idea to classify edges in the graph into two types namely : strong and weak. 
+\section{Cycle detection using Strong-Weak}
+Brownbridge classifies the edges in the graph into strong and weak. The classification is based on the invariant that there is no cycle of strong edges. So every cycle must contain at least one weak edge. The notion of strong edge is connected to liveness of a node. So  the existence of strong edge indicates that the node is live. 
+
+Strong edges form a connected, acyclic, directed graph in which every node is reachable from R. The rest of the edges are classified as weak. This classification is not simple to compute as themselves might requires complete scanning of the graph. To avoid complete scanning, some heuristic approaches are required. The identification of cycle creating edges are the bottleneck of the classification problem. The edges are  labeled weak if it is created to a node that already exists in the memory. this heuristic guarantee that all cycle contains at least a weak edge. But a node with weak incoming edge does not mean it is part of a cycle. The heuristic helps the mutator to save time in classifying the edges. But the collectors require more information about the topology of the subgraph to identify if the subgraph is indeed garbage to delete.
+\section{Brownbridge Garbage Collector}
+\section{Pitfalls of Brownbridge and successor's technique}
