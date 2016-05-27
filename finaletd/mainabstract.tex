@@ -1,14 +1,13 @@
 \chapter*{Abstract}
 \label{ch:abstract}
+
 Garbage collection is moving from being a utility to a requirement of every modern programming language. 
-With multi-core and distributed systems, most programs written recently are heavily multi-threaded and distributed. Distributed and multi-threaded programs are called concurrent programs. Manual memory management is cumbersome and difficult in concurrent programs.  Concurrent programming is characterized by: multiple independent processes/threads, communication between processes/threads, and uncertainty in the order of concurrent operations.
+With multi-core and distributed systems, most programs written recently are heavily multi-threaded and distributed. Distributed and multi-threaded programs are called concurrent programs. Manual memory management is cumbersome and difficult in concurrent programs.  Concurrent programming is characterized by multiple independent processes/threads, communication between processes/threads, and uncertainty in the order of concurrent operations.
 
-The uncertainty in the order of operations makes manual memory management of concurrent programs difficult. Some programming lanugages offer unfriendly collection feature for concurrent programming like smart pointers in C++.
-%Languages like C++ offer support for memory management using using smart pointers.
-Smart pointers can collect all garbage only if developer identifies cycles being created in the reference graph. With uncertainty in the order of operations in the concurrent programs, the cycle creation cannot be detected unless the entire reference graph can be traversed by the process/thread.
-Smart pointer usage does not guarantee protection from memory leaks unless cycle can be detected as process/thread create them. Detecting cycle as they are being created is very expensive.
-% For cyclic object graphs, a concurrent process must identify that it is creating a cycle and must use a special type of smart pointer to close a cyclic. Smart pointers, therefore, require hints from the programmer to avoid memory leaks. 
-General garbage collectors, on the other hand, can avoid memory leaks, dangling pointers, and double deletion problems in any programming environment without help from the programmer.
+The uncertainty in the order of operations makes manual memory management of concurrent programs difficult. 
+A popular alternative to garbage collection in concurrent programs is to use smart pointers.
+Smart pointers can collect all garbage only if developer identifies cycles being created in the reference graph. 
+Smart pointer usage does not guarantee protection from memory leaks unless cycle can be detected as process/thread create them. General garbage collectors, on the other hand, can avoid memory leaks, dangling pointers, and double deletion problems in any programming environment without help from the programmer.
 
-Concurrent programming is used shared memory and distributed memory systems. State of the art shared memory systems uses single concurrent garabge collector thread that processes the reference graph. Distributed memory systems have very few complete garbage collection algorithm which suffers from global barriers and scalability. This thesis  focuses on designing garbage collection algorithms for shared memory and distributed memory systems that satisfies the following properties: concurrent, parallel, scalable, localized garbage collection, less pause time, high promptness, no global synchronization, safe, complete, and collects garbage in linear time.
+Concurrent programming is used in shared memory and distributed memory systems. State of the art shared memory systems uses a single concurrent garbage collector thread that processes the reference graph. A single concurrent garbage collector does not utilize multiple compute resources. Distributed memory systems have very few complete garbage collection algorithms but use global barriers, centralized and does not scale well. This thesis  focuses on designing garbage collection algorithms for shared memory and distributed memory systems that satisfy the following properties: concurrent, parallel, scalable, localized (decentralized), low pause time, high promptness, no global synchronization, safe, complete, and operates in linear time.
 
