@@ -44,8 +44,8 @@ The main advantage of the garbage collections are
 \end{enumerate}
 \end{comment}
 \paragraph{Dangling Pointers:}
-Dangling pointers are those references in
-the object where developer deleted the object a reference points, but still hold the address of the object. So these references are very dangerous in nature as one does not know what the reference points to. If the reference points to some other object, then computation might yield undesired output or may crash because of mismatch in type information of new object allocated in the same address. 
+Dangling pointers occurs when objects are deleted, but the address pointing to that objects are not cleared.
+So these references are very dangerous in nature as one does not know what the reference points to. If the reference points to some other object, then computation might yield undesired output or may crash because of mismatch in type information of new object allocated in the same address. 
 \paragraph{Double-free bugs:}
 Double free bugs is an issue that happens when an object allocated in the heap is deleted at some point in time and programmer deletes the object again at the same address. It is very risky and can lead to dangling pointers in some cases. If no new objects are created at the same address, then the delete might crash the program. In other extreme case where a new object is allocated at the same address, it deletes the object and creates dangling pointers for all the objects that holds a reference to the deleted object. 
 \paragraph{memory leaks:}
