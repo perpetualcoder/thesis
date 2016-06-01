@@ -30,11 +30,11 @@ The objects in stack and static memory that are considered for defining the whet
 When an object is no longer in use, it is called a garbage object.
  Dead is an alternative adjective used to describe a garbage object. Garbage collection is the process of collecting all dead objects in the heap memory. 
 
-There are two major techniques to identify garbage objects. They are tracing and reference counting. Tracing involves marking all the object in the heap that are in use by going through all the chain of references from the roots. Once the marking is done, all unmarked objects in the heap are considered to be garbage and deleted by the garbage collection process. Reference counting attaches a counter to each object that counts the number of incoming references. When the counter reaches zero, the object is garbage. All available garbage collection algorithms are some combination of these two techniques.
+There are two major techniques to identify garbage objects. They are tracing and reference counting. Tracing involves marking all the objects in the heap that are in use by going through all the chains of references from the roots. Once the marking is done, all unmarked objects in the heap are considered to be garbage and deleted by the garbage collection process. Reference counting attaches a counter to each object that counts the number of incoming references. When the counter reaches zero, the object is garbage. All available garbage collection algorithms are some combination of these two techniques.
 
 \section{Motivation and Objectives}
 \label{intro:motv}
-Developers are using managed languages and runtime systems for several benefits including no dangling pointers, no double-free bugs, no premature deletion of objects, no memory leaks, high productivity, and less code to write ~\cite{Butters}.  
+Developers are using programming languages with automatic memory management for several benefits including no dangling pointers, no double-free bugs, no premature deletion of objects, no memory leaks, high productivity, and less code to write ~\cite{Butters}.  
 \begin{comment}
 The main advantage of the garbage collections are 
 \begin{enumerate}
