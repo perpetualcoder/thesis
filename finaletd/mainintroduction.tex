@@ -103,11 +103,11 @@ The contributions of this thesis are listed below :
 	%\item First known garbage collectors that satisfy all the %above-mentioned properties in both shared memory and %distributed memory systems.
 	\item Novel hybrid reference counting and tracing techniques are used to collect any garbage including cyclic garbage.    
 	\item First known concurrent multi-collector shared memory garbage collector.
-	\item Well known issues in Brownbridge garbage collectors are fixed and complete and safe garbage collector is designed after three successive failures.
-	\item Theoretically, our shared memory garbage collector detects garbage traverses affected the graph of objects 7 traversals less than the state of the art concurrent reference counted garbage collector.
-	\item This thesis presents first known locality based concurrent multi-collector scalable garbage collector with no global synchronization in the distributed memory system. The garbage collector contains complete proof of the system.
-	\item Distributed garbage collector introduces a novel weight based approach to convert the graph into directed acyclic graph and thereby detecting cycles faster.
-	\item Garbage collector that finishes in linear time in a number of edges in the affected subgraph, a part of an original subgraph is better than tracing entire heap in the distributed memory systems.
+	\item Well known issues in Brownbridge garbage collectors are fixed and complete and a safe garbage collector is designed.
+	\item Theoretically, our shared memory garbage collector detects garbage  in fewer traversals than other state of the art concurrent reference counted garbage collector.
+	\item This thesis presents the first known locality-based concurrent multi-collector scalable distributed garbage collector with no global synchronization. The thesis contains a complete proof of the garbage collector.
+	\item The distributed garbage collector introduces a novel weight based approach to convert the graph into a directed acyclic graph and thereby detects cycles faster.
+	\item The designed garbage collector algorithms finishes garbage collection in linear time.
 \end{enumerate}
 \section{Dissertation Organization}
 \label{intro:do}
