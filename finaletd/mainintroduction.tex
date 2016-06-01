@@ -98,7 +98,7 @@ The safety property is the most crucial part of garbage collection. This avoids 
 Completeness guarantees that a garbage collector will collect all garbage objects in the heap, thereby removing all memory leaks in the heap. Reference counting garbage collectors are well known for incomplete garbage collection due to their inability to collect cyclic garbage. This property is challenging as the locality-based collectors usually use reference counting. Collectors designed for both environments use reference counting and tracing techniques to solve the problem and guarantees the garbage collectors are complete.
 \section{Contributions}
 \label{intro:contr}
-The thesis main contributions are listed below :
+The contributions of this thesis are listed below :
 \begin{enumerate}
 	\item First known garbage collectors that satisfy all the above-mentioned properties in both shared memory and distributed memory system is introduced in this thesis.
 	\item Novel reference counting based technique is used to collect any garbage including cyclic garbage.    
