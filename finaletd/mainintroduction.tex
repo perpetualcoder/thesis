@@ -44,12 +44,12 @@ The main advantage of the garbage collections are
 \end{enumerate}
 \end{comment}
 \paragraph{Dangling Pointers:}
-Dangling pointers occurs when objects are deleted, but the address pointing to that objects are not cleared.
-These references are very dangerous as one does not know what the reference points to. If the reference points to some other object, then computation might yield undesired output or may crash because of the mismatch in type information of new object allocated in the same address. 
+Dangling pointers occur when objects are deleted, but the addresses pointing to those objects are not cleared.
+These references are very dangerous as one does not know what the reference points to. If the reference points to some other object, then computation might yield an undesired output or may crash because of a mismatch in type information with new object allocated in the same address. 
 \paragraph{Double-free bugs:}
-Double free bugs is an issue that happens when an object allocated in the heap is deleted at some point in time and programmer deletes the object again at the same address. It is very risky and can lead to dangling pointers in some cases. If no new objects are created at the same address, then the delete might crash the program. In other extreme case where a new object is allocated at the same address, it deletes the object and creates dangling pointers for all the objects that holds a reference to the deleted object. 
-\paragraph{memory leaks:}
-Memory leak happens when the object is allocated in the heap and it is not used. The unused object is not deleted and it consumes memory which could be reused for other objects. This inefficient organization of heap can affect the runtime of an application heavily. This affects the memory allocator as there will be less memory available to allocate and program crashes when there is no memory available to allocate memory for more objects.
+Double free bugs is an issue that happens when an object allocated in the heap is deleted at some point in time and programmer deletes the object again at the same address. It is very risky and can lead to dangling pointers in some cases. If no new objects are created at the same address, then the delete might crash the program. In other extreme case where a new object is allocated at the same address, it deletes the object and creates dangling pointers for all the objects that hold a reference to the deleted object. 
+\paragraph{Memory leaks:}
+Memory leaks occur when objects are not deleted, but the address pointing to those objects are cleared. The unused object is not deleted and it consumes memory which could be reused for other objects. This inefficient organization of heap can affect the runtime of an application heavily. This affects the memory allocator as there will be less memory available to allocate and program crashes when there is no more memory available to allocate memory for more objects.
 
 The advantages of automatic memory management is very crucial for successful execution of any application. This thesis focuses on concurrent programs and automatic memory management requirement in concurrent programs. 
 
