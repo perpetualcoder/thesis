@@ -26,8 +26,9 @@ Heap memory helps a developer to extend the life of dynamically allocated object
 The term garbage refers to the objects allocated in the heap that are not used anymore. All objects allocated in memory can be reference by their address. An object $x$ is said to hold a reference to object $y$ when $x$ contains the address of $y$. 
 An object is said to be in use if it is reachable through a chain of references starting from stack or static memory.
 %To use any object allocated in heap memory, an object in the stack %or static memory must be able to read content in the object through %the reference saved in the object itself or through a chain of %references in multiple object chain.
-The objects in the stack and static memory that are considered for defining the whether the object in use are referred as \textbf{roots}.
-So when any root object read contents of an object in the heap memory, then the object cannot be used by the program and should be classified as garbage objects. Dead is an alternative adjective used to describe the objects lost its life and will not be used anymore. Garbage collection is the process of collecting all dead objects in the heap memory. 
+The objects in stack and static memory that are considered for defining the whether an object in use are referred as \textbf{roots}.
+When an object is declared as unused, it is called garbage object.
+ Dead is an alternative adjective used to describe the objects lost its life and will not be used anymore. Garbage collection is the process of collecting all dead objects in the heap memory. 
 
 There is two major technique to identify garbage objects.They are tracing and reference counting. Tracing involves marking all the object in the heap that is in use by going through all the chain of references from roots. Once the marking is done, all unmarked object in the heap is considered as garbage and deleted by the garbage collection program. Reference counting approach attaches a counter to each object that counts a number of objects that holds a reference to it. When the counter reaches zero, the object identifies that it is garbage and deletes itself.
 
