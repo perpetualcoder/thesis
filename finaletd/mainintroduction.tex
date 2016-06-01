@@ -51,7 +51,7 @@ Double free bugs is an issue that happens when an object allocated in the heap i
 \paragraph{Memory leaks:}
 Memory leaks occur when objects are not deleted, but the address pointing to those objects are cleared. The unused objects are not deleted and they consume memory which could be reused for other objects. This inefficient organization of heap can affect the runtime of an application heavily. This affects the memory allocator as there will be less memory available to allocate and program crashes when there is no more memory available to allocate memory for more objects.
 
-\\
+\vspace{0.2in}
 The advantages of automatic memory management is important for successful execution of any application. This thesis focuses on concurrent programs and automatic memory management requirement in concurrent programs. 
 
 Concurrent programs are termed used to describe multiple programs running simultaneously to perform some computation. There are two different environments where concurrent programs are used : Shared memory and distributed memory systems. Shared memory systems contain multiple processors / multi-core processors sharing a common memory and execute the computation through threads / processes. Thread communicate using shared memory and may use atomic instructions or traditional lock to execute some critical sections of the program. 
