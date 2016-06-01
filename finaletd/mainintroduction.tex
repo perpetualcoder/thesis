@@ -53,11 +53,11 @@ In shared memory environment, concurrent programmers use smart pointers to manua
 
 When concurrent programs are written by developers, the manual memory management is extremely difficult and error-prone. When multiple threads access a common object, the dangling pointers are common scenario due to the incomplete information about ownership. Double free bugs can occur just as frequent as the dangling pointers. Smart pointers are defacto standards to avoid memory management issues in the concurrent programs. These smart pointers does not guarantee complete garbage collection unless until carefully used. The use of cyclic objects in the heap memory requires extreme care in manually managed concurrent program. It is carefully avoided by all programmers usually to make the program memory leak free. The above reasons explain how difficult the automatic memory management in the concurrent programming environment is and necessity for high quality automatic memory management in concurrent programming environments. 
 
-Beyong solving the garbage collection in concurrent programming environment, the main objectives of this thesis are to design garbage collectors for shared and distributed memory system that satisfy the following properties
+Beyond solving the garbage collection in concurrent programming environment, the main objectives of this thesis are to design garbage collectors for shared and distributed memory system that satisfy the following properties :
 \begin{enumerate}
 	\item Concurrent garbage collectors (Less pause time)
 	\item Multi-collector garbage collection
-	\item No global synchornization (High Throughput)
+	\item No global synchronization (High Throughput)
 	\item Locality based garbage collection
 	\item Scalable
 	\item Promptness
@@ -65,10 +65,14 @@ Beyong solving the garbage collection in concurrent programming environment, the
 	\item Completeness
 \end{enumerate}
 
+There are no garbage collection algorithms available for shared and distributed memory systems that satisfy all the above mentioned properties.  This thesis focuses on designing novel garbage collector with significant improvement. Apart from garbage collection, the ideas presented in the thesis will be of use to solve other theoretical problems in distributed computing like dynamic reachability, breaking cycle, detecting cycles in graph, data aggregation in the sensor network, broken network detection in sensor networks.
+
+
 \paragraph{Concurrent:}
-	Concurrent garbage collectors have negligible to zero pause time. As these type of collectors process heap along side application, application does not get locked and waiting for the garbage collector to finish processing.
+	Concurrent garbage collectors work simultaneously with application. Application will not experience any pause during execution to scan the memory. They
+	have negligible to zero pause time. There are handful of collectors that satisfy this property. 
 \paragraph{Multi-collector Garbage :}
-	Multi-collector garbage collections are multiple independent garbage collectors that work independently on the heap to identify garabge. These collectors utilize multi-processors systems when there is lot of compute resources being under utilized.
+	Multi-collector garbage collectors are multiple independent garbage collector thread / process that work independently on the heap to identify garabge. These collectors utilize multiple processors when there is lot of compute resources being under utilized. These type of collectors are essential in distributed systems and shared memory systems. In shared memory systems, when multiple processors are under utilized, this pro
 \paragraph{Global Synchronization:}
 	When multi-collector garbage collectors are used, conventional solutions require global barrier among all the collectors to communicate and share the information to identify garbage objects and delete them. With no global synchronization, throughput of garbage collectors will be high.
 \paragraph{Locality based garbage collection:}
