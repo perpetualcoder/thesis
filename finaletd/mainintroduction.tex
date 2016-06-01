@@ -49,7 +49,8 @@ These references are very dangerous as one does not know what the reference poin
 \paragraph{Double-free bugs:}
 Double free bugs is an issue that happens when an object allocated in the heap is deleted at some point in time and programmer deletes the object again at the same address. It is very risky and can lead to dangling pointers in some cases. If no new objects are created at the same address, then the delete might crash the program. In other extreme case where a new object is allocated at the same address, it deletes the object and creates dangling pointers for all the objects that hold a reference to the deleted object. 
 \paragraph{Memory leaks:}
-Memory leaks occur when objects are not deleted, but the address pointing to those objects are cleared. The unused objects are not deleted and it consumes memory which could be reused for other objects. This inefficient organization of heap can affect the runtime of an application heavily. This affects the memory allocator as there will be less memory available to allocate and program crashes when there is no more memory available to allocate memory for more objects.
+Memory leaks occur when objects are not deleted, but the address pointing to those objects are cleared. The unused objects are not deleted and they consume memory which could be reused for other objects. This inefficient organization of heap can affect the runtime of an application heavily. This affects the memory allocator as there will be less memory available to allocate and program crashes when there is no more memory available to allocate memory for more objects.
+
 
 The advantages of automatic memory management is very crucial for successful execution of any application. This thesis focuses on concurrent programs and automatic memory management requirement in concurrent programs. 
 
