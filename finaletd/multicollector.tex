@@ -100,17 +100,10 @@ Appendix ~\ref{proofapp} contains the proof.
 Node properties are: node id (ID),
 phantom count (PC), recovery count (RCC), collection id (CID). Bold borders denote
 initiators, and dot and dashed edges denote phantom edges.
-%In the above
-%scenario, $N_4$ belongs to collection process $N_6$. The RCC is 1 in $N_4$
-%due to edge $N_6 \rightarrow N_4$. Edge $N_2 \rightarrow N_4$ does not increment
-%RCC in $N_4$ due to its smaller collection id,
-%preventing $N_4$ from sending a \emph{return} message to $N_6$. The RCC
-%creates an ordering in the operations of the two collection processes and
-%avoids premature deletion of $N_6$ and its affected subgraph.
 }
 \label{fig:recoverycount}
 \end{center}
-\vspace{-8mm}
+%\vspace{-8mm}
 \end{figure}
 
 \paragraph{Transaction Approach:}
