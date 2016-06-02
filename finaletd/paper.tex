@@ -262,7 +262,7 @@ operation.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.32\textwidth]{figs/simplecyclenew}
+\includegraphics[width=0.52\textwidth]{figs/simplecyclenew}
 \caption{When root R1 is removed, the garbage collection algorithm
 only needs to trace link 2 to prove that object A does not need
 to be collected.}
@@ -542,7 +542,7 @@ $Cleanup$ happens next, and all objects are reclaimed.
 \begin{figure*}[!t]
   \centering
   %\subfloat[Initially, the owner node $v$ publishes the object]
-  {\includegraphics[height=4.5in]{figs/method}\label{fig:example1}}
+  {\includegraphics[height=6.5in]{figs/method}\label{fig:example1}}
   %\hspace{30pt}%
   %\subfloat[Node $u$ issues a ${\sf move}$ request]
   %{\includegraphics[height=2.0in]{figs/method1}\label{fig:example2}}\\
@@ -559,7 +559,7 @@ $Cleanup$ happens next, and all objects are reclaimed.
 \begin{figure*}[!t]
   \centering
   %\subfloat[Initially, the owner node $v$ publishes the object]
-  {\includegraphics[height=2.0in]{figs/doublylinkedlist}\label{fig:example2}}
+  {\includegraphics[height=3.0in]{figs/doublylinkedlist}\label{fig:example2}}
  \caption{Doubly-linked list}%
   \label{ex2}
 \end{figure*}
@@ -622,7 +622,7 @@ $Cleanup$ happens next, and all objects are reclaimed.
 \begin{figure*}[!t]
   \centering
   %\subfloat[Initially, the owner node $v$ publishes the object]
-  {\includegraphics[height=2.0in]{figs/recoveringdbl}}%\label{fig:example1}}
+  {\includegraphics[height=3.0in]{figs/recoveringdbl}}%\label{fig:example1}}
 
   \caption{Rebalancing a doubly-linked list}%
   \label{ex3}
@@ -838,7 +838,7 @@ The garbage collection problem can be modeled as a directed graph problem in whi
 \begin{minipage}[t]{0.5\linewidth}
   \centering
 % %   %\subfloat[Initially, the owner node $v$ publishes the object]
-  \includegraphics[height=1.18in]{figs/graphmodel2}
+  \includegraphics[height=2.18in]{figs/graphmodel2}
   %\label{fig:graph1}}
 % %   \hspace{12pt}%
   \caption{Graph model}%
@@ -849,7 +849,7 @@ The garbage collection problem can be modeled as a directed graph problem in whi
 %\begin{wrapfigure}{r}{1.0in}
   \centering
 % %   %\subfloat[Initially, the owner node $v$ publishes the object]
-  \includegraphics[height=1.18in]{figs/graphmodel2b}
+  \includegraphics[height=2.18in]{figs/graphmodel2b}
   %\label{fig:graph1}}
 % %   \hspace{12pt}%
   \caption{Subgraph model}%
@@ -1140,7 +1140,7 @@ on 16 cores) running Redhat Linux 6 64-bit operating system.
 \begin{figure}[h!]
   \centering
 % %   %\subfloat[Initially, the owner node $v$ publishes the object]
-  \includegraphics[height=1.8in,width=3.0in]{figs/CleanupTimeperObjectonly16log}
+  \includegraphics[height=3.0in,width=4.0in]{figs/CleanupTimeperObjectonly16log}
   %\label{fig:graph1}}
 % %   \hspace{12pt}%
   \caption{
@@ -1155,7 +1155,7 @@ on 16 cores) running Redhat Linux 6 64-bit operating system.
 \begin{figure}[h!]
   \centering
 % %   %\subfloat[Initially, the owner node $v$ publishes the object]
-  \includegraphics[height=1.8in,width=3.0in]{figs/collapseoverheadonly16log}
+  \includegraphics[height=3.0in,width=4.0in]{figs/collapseoverheadonly16log}
   %\label{fig:graph1}}
 % %   \hspace{12pt}%
   \caption{A chain of linked cycles is created in memory. The connections are severed,
@@ -1168,7 +1168,7 @@ on 16 cores) running Redhat Linux 6 64-bit operating system.
 \begin{figure}[h!]
   \centering
 % %   %\subfloat[Initially, the owner node $v$ publishes the object]
-  \includegraphics[height=1.8in,width=3.0in]{figs/linearity}
+  \includegraphics[height=3.0in,width=4.0in]{figs/linearity}
   %\label{fig:graph1}}
 % %   \hspace{12pt}%
   \caption{
@@ -1273,7 +1273,7 @@ deletions are occurring;
 These advantages should make our collector useful for distributed systems, where traces that
 cross node boundaries are likely to be extremely expensive.
 \end{enumerate}
-
+\vspace{0.5in}
 Disadvantages include:
 \begin{enumerate}
 \item An increased memory overhead: three counters and a pointer are required
