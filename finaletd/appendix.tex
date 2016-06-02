@@ -102,6 +102,14 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 	\Else
 		\State  $<$R,  msg.sender$>$
 	\EndIf
+\algstore{scadgc}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\scriptsize
+\begin{algorithmic}[1]
+	\algrestore{scadgc}
 \ElsIf {msg type = PD}
 	\State Decrement PC.
 	\If {SC= 0 \& WC = 0 \& PC = 0}
@@ -147,6 +155,13 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 				\State  $<$R , Parent $>$
 			\EndIf
 		\EndIf
+		\algstore{scadgc2}
+		\end{algorithmic}
+	\end{algorithm}
+	\begin{algorithm}[H]
+		\scriptsize
+		\begin{algorithmic}[1]
+			\algrestore{scadgc2}
 	\ElsIf {state = Building}
 		\State state = Healthy
 		\If { Not Initiator}
@@ -305,9 +320,18 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 	  \State CID = new Slightly Higher Collector Id
 				\State SRO = false
 			\EndIf
+		
+		
 			\If{Rerecover = true or SC $>$0}
 				\State Rerecover = false
 				\State RCC = 0
+					\algstore{returnmca}
+				\end{algorithmic}
+			\end{algorithm}
+					\begin{algorithm}[H]
+						\scriptsize
+						\begin{algorithmic}
+							\algrestore{returnmca}
 				\If{SC $=$ 0}
 					\State state = Recovering
 					\State $<$RC , $\Gamma_{out}$,CID $>$
@@ -393,6 +417,13 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 		\State state = Healthy
 		\State $<$ R , Parent $>$
 	\EndIf
+	\algstore{buildmca}
+	\end{algorithmic}
+\end{algorithm}
+\begin{algorithm}[H]
+\scriptsize
+\begin{algorithmic}[1]
+\algrestore{buildmca}
 \ElsIf{state = Recovering \& Waiting for return msgs}
 	\If{CID$\geq$msg.CID}
 		\State $<$R , msg.sender, CID $>$
@@ -476,6 +507,13 @@ $=$ 0 \& PhantomNodeFlag $=$ false \& CID $=$ $\bot$ \& waiting $=$ 0
 		\State Parent = msg.sender
 		\State Rephantomize = true
 	\EndIf
+	\algstore{recoverymca}
+	\end{algorithmic}
+\end{algorithm}
+\begin{algorithm}[H]
+\scriptsize
+\begin{algorithmic}[1]
+	\algrestore{recoverymca}
 \ElsIf{state = Recovering}
 	\If{msg.CID $<$ CID}
 		\State $<$R , msg.sender $>$
