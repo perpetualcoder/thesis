@@ -1,12 +1,12 @@
-In the multi-core and distributed systems era, the complete high performance garbage collector is necessary. The garbage collection algorithms discussed in this thesis are designed for models that mimic the reality in shared memory and distributed memory systems. These garbage collectors  can be implemented without any changes in any programming language. The thesis contributions are summarized as below:
+In the multi-core and distributed systems era, a complete high performance garbage collector is necessary. The garbage collection algorithms discussed in this thesis are designed for models that mimic the reality in shared memory and distributed memory systems. These garbage collectors  can be implemented without any changes for any programming language. The thesis contributions are summarized as below:
 \begin{itemize}
-		\item Presented a novel cyclic hybrid reference counting and tracing technique garbage collector for general graphs.
+		\item Presented a novel, cyclic, hybrid reference counting and tracing  garbage collector for general graphs.
 		\item Designed the first known concurrent, multi-collector, shared memory garbage collector.
 		\item Flawed Brownbridge garbage collector algorithm is corrected and extended by our garbage collectors.
-		\item Reduced number of traversals required significantly to detect garbage in dynamic concurrent garbage collection environment when compared to state of the art reference counted concurrent garage collectors.
+		\item Significantly reduced the number of traversals required to detect garbage in dynamic concurrent garbage collection environment when compared to state of the art reference counted concurrent garage collectors.
 		\item Introduced the first known distributed garbage collection algorithm with no global synchronization.
-		\item Introduced the first known locality-based distributed garbage collection algorithms.
+		\item Introduced the first known locality-based distributed garbage collection algorithm.
 		\item Designed highly scalable garbage collectors for both shared and distributed memory enviornments.
-		\item Introduced low memory cost, low communication cost, weight-based approach to convert the reference graph into directed acyclic graph and thereby detect cycles faster.
+		\item Introduced low memory cost, low communication cost, weight-based approach to convert the reference graph into a directed acyclic graph and thereby detect cycles faster.
 		\item Both garbage collectors operate in linear time in quiescent state.
 \end{itemize}
